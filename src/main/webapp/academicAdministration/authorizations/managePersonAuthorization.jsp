@@ -29,26 +29,31 @@
 <jsp:include page="authorizationsScripts.jsp" />
 
 <div id="authorizationList" style="margin-top: 15px">
-	<logic:iterate id="memberRules" name="groups">
+	<logic:iterate id="memberRules" name="authorizations">
 		<div class="edit-authorizations">
-			<div id="period" class="authorization period  ui-droppable">
+			<div id="period" class="authorization">
 				<header id="header">
 					<h4>
 					   <bean:write name="memberRules" property="key.username" />
 					</h4>
-					<html:link action="/authorizations.do?method=manageOperation" paramId="operation" paramName="memberRules"
-							paramProperty="key" styleClass="edit-auth">
+					<html:link action="/personsAuthorizations.do?method=manageOperation" paramId="username" paramName="memberRules"
+							paramProperty="key.username" styleClass="edit-auth">
 						<img src="${pageContext.request.contextPath}/images/iconEditOff.png" />
 						<bean:message bundle="ACADEMIC_OFFICE_RESOURCES" key="label.academicAdministration.authorizations.manage" />
 					</html:link>
 				</header>
-				<ul style="display: none" class="small">
+				<ul>
 					<logic:notEmpty name="memberRules" property="value">
 					<logic:iterate id="rule" name="memberRules" property="value">
 					   <li>
 					   	<div id="period" class="authorization period ui-droppable">
 							<header id="header">
 								<bean:write name="rule" property="operation.localizedName" />
+								<html:link action="/personsAuthorizations.do?method=revokeRule" paramId="ruleId"
+										paramName="rule" paramProperty="operation"
+										onclick="return confirm('Tem a certeza que pretende remover a autorização?');">
+									<bean:message bundle="ACADEMIC_OFFICE_RESOURCES" key="label.remove" />
+								</html:link>
 							</header>
 							<ul style="display: none" class="small">
 								
@@ -80,3 +85,4 @@
 		</div>
 	</logic:iterate>
 </div>
+

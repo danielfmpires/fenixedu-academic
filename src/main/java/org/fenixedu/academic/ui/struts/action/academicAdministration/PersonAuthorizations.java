@@ -38,13 +38,31 @@ import com.google.common.collect.Multimap;
 @StrutsFunctionality(app = AcademicAdministrationApplication.class, path = "personsAuthorizations",
         titleKey = "personsAuthorizations", accessGroup = "#managers")
 @Mapping(path = "/personsAuthorizations", module = "academicAdministration")
-@Forward(name = "personsAuthorizations", path = "/academicAdministration/authorizations/personAuthorizations.jsp")
+@Forward(name = "authorizationsByPerson", path = "/academicAdministration/authorizations/authorizationsByPerson.jsp")
+@Forward(name = "managePersonAuthorization", path = "/academicAdministration/authorizations/managePersonAuthorization.jsp")
 public class PersonAuthorizations extends FenixDispatchAction {
 
     @EntryPoint
     public ActionForward personsAuthorizations(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) {
 
+        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations();
+
+        request.setAttribute("groups", userAcademicOperationTypes.asMap());
+        return mapping.findForward("authorizationsByPerson");
+    }
+
+    public ActionForward manageOperation(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse response) {
+
+        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations(request.getParameter("username"));
+
+        request.setAttribute("authorizations", userAcademicOperationTypes.asMap());
+
+        return mapping.findForward("managePersonAuthorization");
+    }
+
+    private Multimap<User, AcademicAccessRule> getAuthorizations() {
         final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
 
         AcademicAccessRule.accessRules().forEach(rule -> {
@@ -53,8 +71,21 @@ public class PersonAuthorizations extends FenixDispatchAction {
             });
         });
 
-        request.setAttribute("groups", userAcademicOperationTypes.asMap());
-        return mapping.findForward("personsAuthorizations");
+        return userAcademicOperationTypes;
+    }
+
+    private Multimap<User, AcademicAccessRule> getAuthorizations(String username) {
+        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
+
+        AcademicAccessRule.accessRules().forEach(rule -> {
+            rule.getWhoCanAccess().getMembers().forEach(user -> {
+                if (user.getUsername().equals(username)) {
+                    userAcademicOperationTypes.put(user, rule);
+                }
+            });
+        });
+
+        return userAcademicOperationTypes;
     }
 
 }
