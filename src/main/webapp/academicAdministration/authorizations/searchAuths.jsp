@@ -47,7 +47,7 @@
 	</logic:equal>
 	
 	<logic:greaterThan name="numberStudents" value="1">
-		<fr:view name="authorization" schema="Authorization.username">
+		<fr:view name="students" schema="Authorization.username">
 			<fr:layout name="tabular" >
 				<fr:property name="classes" value="tstyle1 thlight mtop2"/>
 	        	<fr:property name="columnClasses" value="acenter,,"/>

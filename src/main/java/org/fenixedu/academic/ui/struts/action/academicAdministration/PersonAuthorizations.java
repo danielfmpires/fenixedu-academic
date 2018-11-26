@@ -35,6 +35,9 @@ import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.Atomic.TxMode;
+
 @StrutsFunctionality(app = AcademicAdministrationApplication.class, path = "personsAuthorizations",
         titleKey = "personsAuthorizations", accessGroup = "#managers")
 @Mapping(path = "/personsAuthorizations", module = "academicAdministration")
@@ -52,15 +55,15 @@ public class PersonAuthorizations extends FenixDispatchAction {
         return mapping.findForward("authorizationsByPerson");
     }
 
-    public ActionForward manageOperation(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
-            HttpServletResponse response) {
-
-        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations(request.getParameter("username"));
-
-        request.setAttribute("authorizations", userAcademicOperationTypes.asMap());
-
-        return mapping.findForward("managePersonAuthorization");
-    }
+//    public ActionForward manageOperation(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+//            HttpServletResponse response) {
+//
+//        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations(request.getParameter("username"));
+//
+//        request.setAttribute("authorizations", userAcademicOperationTypes.asMap());
+//
+//        return mapping.findForward("managePersonAuthorization");
+//    }
 
     private Multimap<User, AcademicAccessRule> getAuthorizations() {
         final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
@@ -74,18 +77,30 @@ public class PersonAuthorizations extends FenixDispatchAction {
         return userAcademicOperationTypes;
     }
 
-    private Multimap<User, AcademicAccessRule> getAuthorizations(String username) {
-        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
+//    private Multimap<User, AcademicAccessRule> getAuthorizations(String username) {
+//        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
+//
+//        AcademicAccessRule.accessRules().forEach(rule -> {
+//            rule.getWhoCanAccess().getMembers().forEach(user -> {
+//                if (user.getUsername().equals(username)) {
+//                    userAcademicOperationTypes.put(user, rule);
+//                }
+//            });
+//        });
+//
+//        return userAcademicOperationTypes;
+//    }
 
-        AcademicAccessRule.accessRules().forEach(rule -> {
-            rule.getWhoCanAccess().getMembers().forEach(user -> {
-                if (user.getUsername().equals(username)) {
-                    userAcademicOperationTypes.put(user, rule);
-                }
-            });
-        });
+    public ActionForward revokeRule(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse response) {
+        final AcademicAccessRule rule = getDomainObject(request, "ruleId");
+        revoke(rule);
+        return personsAuthorizations(mapping, actionForm, request, response);
+    }
 
-        return userAcademicOperationTypes;
+    @Atomic(mode = TxMode.WRITE)
+    private void revoke(AcademicAccessRule rule) {
+        rule.revoke();
     }
 
 }
