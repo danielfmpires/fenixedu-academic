@@ -23,129 +23,111 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr"%>
+<%@page import="org.fenixedu.academic.domain.accessControl.rules.AccessRule" %>
+<%@page import="org.fenixedu.academic.domain.administrativeOffice.AdministrativeOffice" %>
+<%@page import="org.fenixedu.academic.domain.AcademicProgram"%>
+
 
 <html:xhtml />
 
 <jsp:include page="authorizationsScripts.jsp" />
 
-<script type="text/javascript">
-	$(document).ready(function() {
 
-		$('#confirmDeleteScope').on('show.bs.modal', function (e) {
-			      var $scopeName = $(e.relatedTarget).attr('data-scope-name');
-			      var $userName = $(e.relatedTarget).attr('data-user-name');
-			      var $authName = $(e.relatedTarget).attr('data-auth-name');
-			      var $message = "Are you sure you want to delete '" + $scopeName + "' from '" + $userName + "' in authorization '" + $authName + "' ?";
-			      $(this).find('.modal-body p').text($message);
-			      var $title = "Delete '" + $scopeName + "'";
-			      var $scopeId = $(e.relatedTarget).attr('data-scope-id');
-			      $(this).find('.modal-title').text($title);
+<div class="edit-authorizations">
+	<fr:form action="/authorizations.do">
 
-			      $('#confirmDeleteScope').find('.modal-footer #confirm').on('click', function(){
-			    	  $.ajax({
-                          headers: { '${csrf.headerName}': '${csrf.token}' },
-                          url: deleteUrl + $scopeId,
-                          type: 'DELETE',
-                          success: function(result) {
-						    	location.reload();
-						    }
-						});
-				  });
-			      
-			      $('#confirmDeleteScope').find('.modal-footer #confirm').on('click', function(){
-			    	  $.ajax({
-                          headers: { '${csrf.headerName}': '${csrf.token}' },
-                          url: deleteUrl + $scopeId,
-                          type: 'DELETE',
-                          success: function(result) {
-						    	location.reload();
-						    }
-						});
-				  });
-			      
-			  });
-		
-		$('#confirmDeleteRule').on('show.bs.modal', function (e) {
-		      var $userName = $(e.relatedTarget).attr('data-user-name');
-		      var $authName = $(e.relatedTarget).attr('data-auth-name');
-		      var $authId = $(e.relatedTarget).attr('data-auth-id');
-		      var $message = "Are you sure you want to revoke the rule '" + $authName + "' from '" + $userName + "' ?";
-		      $(this).find('.modal-body p').text($message);
-		      var $title = "Delete '" + $authName + "'";
-		      $(this).find('.modal-title').text($title);
+		<div id="period" class="authorization period newObject">
+			
+			<div class="authorization-edit">
+				<fr:edit name="authorizationsBean">
+					<fr:schema type="org.fenixedu.academic.ui.struts.action.academicAdministration.AuthorizationGroupBean" bundle="ACADEMIC_OFFICE_RESOURCES">
+						<fr:slot name="operation" layout="autoComplete" key="label.academicAdministration.authorizations.member" validator="org.fenixedu.academic.ui.renderers.validators.RequiredAutoCompleteSelectionValidator">
+							<fr:property name="size" value="50" />
+							<fr:property name="labelField" value="presentationName" />
+							<fr:property name="indicatorShown" value="true" />
+							<fr:property name="provider" value="org.fenixedu.academic.service.services.commons.searchers.SearchAllActiveParties" />
+							<fr:property name="args" value="slot=name,size=50,internal=true" />
+							<fr:property name="minChars" value="4" />
+						</fr:slot>
+					</fr:schema>
+				</fr:edit>
+				<fieldset class="botoes">
+					<html:button value="Pesquisar" styleClass="confirmar" 
+					onclick="" 
+					property="create" />
+				</fieldset>
+				
+			</div>
+		</div>
+	
+	</fr:form>
+</div>
+				
 
 
-		      $('#confirmDeleteRule').find('.modal-footer #confirm').on('click', function(){
-		    	  
-		    	  $.ajax({
-                      url: $(e.relatedTarget).attr('data-url'),
-                      type: 'GET',
-                      success: function(result) {
-                    	  $('#'+$authId).hide();
-					    }
-					});
-			  });
-		  });
-		
-		});
-</script>
 
 
-<div id="authorizationList" style="margin-top: 15px">
+
+
+
+
+
+<div id="authorizationList" class="col-lg-8" style="margin-top: 15px">
 	<logic:iterate id="memberRules" name="groups">
 		<div class="edit-authorizations">
-			<div id="period" class="authorization period  ui-droppable">
+			<div id="period"  class="authorization period ">
 				<header id="header">
 					<h4>
 					   <bean:write name="memberRules" property="key.username" />
 					</h4>
 					<html:link action="/personsAuthorizations.do?method=manageOperation" paramId="username" paramName="memberRules"
 							paramProperty="key.username" styleClass="edit-auth">
-						<img src="${pageContext.request.contextPath}/images/iconEditOff.png" />
-						<bean:message bundle="ACADEMIC_OFFICE_RESOURCES" key="label.academicAdministration.authorizations.manage" />
+						<img src="${pageContext.request.contextPath}/images/iconCreatePeriod.png" />
+						<bean:message bundle="APPLICATION_RESOURCES" key="label.add" />
 					</html:link>
 				</header>
-				<ul style="display: none" class="small">
+				<ul style="display: block" class="small">
 				
 					<table class="table">
 					  	  <thead>
 					  			<tr>
 					  				<th><bean:message key="label.authorizations" bundle="ACADEMIC_OFFICE_RESOURCES" /></th>
 					  				<th><bean:message key="label.offices" bundle="ACADEMIC_OFFICE_RESOURCES" /></th>
-					  				<th><bean:message key="label.degrees" bundle="APPLICATION_RESOURCES"/></th>					  				
+					  				<th><bean:message key="label.degrees" bundle="APPLICATION_RESOURCES"/></th>				  				
 					  			</tr>
 					  	  </thead>
 					  	  <tbody>
 					  	  	<logic:notEmpty name="memberRules" property="value">
 							<logic:iterate id="rule" name="memberRules" property="value">
-								<tr id="<bean:write name="rule" property="externalId" />">
+								<tr class="auth ui-droppable" id="<bean:write name="rule" property="externalId" />">
 								
 									<td>
-										<html:link action="/personsAuthorizations.do?method=revoke" paramId="ruleId" paramName="rule"
-												paramProperty="externalId" styleClass="edit-auth">
-											<img src="${pageContext.request.contextPath}/images/iconEditOff.png" />
-											<bean:message bundle="ACADEMIC_OFFICE_RESOURCES" key="label.academicAdministration.authorizations.manage" />
-										</html:link>
+										<bean:define id="revokeUrl">
+											<%= "/academicAdministration/personsAuthorizations.do?method=revokeRule&ruleId=" + ((AccessRule)rule).getExternalId() %>
+										</bean:define>
 										
-										<button  data-user-name="<bean:write name="memberRules" property="key.username" />" data-url="${fr:checksum('/academic-admin-office/academic-administration/personsAuthorizations.do?method=revokeRule&ruleId=')}" data-auth-id="<bean:write name="rule" property="externalId" />" data-auth-name="<bean:write name="rule" property="operation.localizedName" />"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" title="<bean:message key="label.delete"/>">
+										<button  data-user-name="<bean:write name="memberRules" property="key.username" />" data-url="${fr:checksum(revokeUrl)}" data-auth-id="<bean:write name="rule" property="externalId" />" data-auth-name="<bean:write name="rule" property="operation.localizedName" />"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" title="<bean:message key="label.delete"/>">
 											<bean:write name="rule" property="operation.localizedName" />
 											<span class="glyphicon glyphicon-remove"></span>
 										</button>
 									</td>
 									
 									<td>
-										<table>
+										<table class="office-list">
 										<logic:notEmpty	name="rule" property="office">
 											<logic:iterate id="office" name="rule" property="office">
-												<tr>
+												<tr id="${office.externalId}" >
 													<td>
-																										
-													<button data-scope-id="${office.externalId}" data-user-name="<bean:write name="memberRules" property="key.username" />" data-auth-name="<bean:write name="rule" property="operation.localizedName" />" data-scope-name="${office.name.content}" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default" title="<bean:message key="label.delete"/>">
-														<bean:write name="office" property="name.content" />
-														<span class="glyphicon glyphicon-remove"></span>
-													</button>
+														<bean:define id="removeScope">
+															<%= "/academicAdministration/personsAuthorizations.do?method=editAuthorizationOffice&ruleId=" + ((AccessRule)rule).getExternalId() + "&office=" + ((AdministrativeOffice)office).getExternalId() %>
+														</bean:define>
+																																				
+														<button data-scope-id="${office.externalId}" data-auth-id="<bean:write name="rule" property="externalId" />" data-url="${fr:checksum(removeScope)}" data-user-name="<bean:write name="memberRules" property="key.username" />" data-auth-name="<bean:write name="rule" property="operation.localizedName" />" data-scope-name="${office.name.content}" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default" title="<bean:message key="label.delete"/>">
+															<bean:write name="office" property="name.content" />
+															<span class="glyphicon glyphicon-remove"></span>
+														</button>
 													</td>
-												</tr>
+												</tr>												
 											</logic:iterate>
 										</logic:notEmpty>
 										</table>
@@ -155,9 +137,12 @@
 										<table>
 										<logic:notEmpty name="rule" property="program">
 											<logic:iterate id="program"	name="rule" property="program">
-												<tr>
+												<tr id="${program.externalId}">
 													<td>
-														<button data-scope-id="${program.externalId}" data-user-name="<bean:write name="memberRules" property="key.username" />" data-auth-name="<bean:write name="rule" property="operation.localizedName" />" data-scope-name="${office.name.content}" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default" title="<bean:message key="label.delete"/>">
+														<bean:define id="removeScope">
+															<%= "/academicAdministration/personsAuthorizations.do?method=editAuthorizationProgram&ruleId=" + ((AccessRule)rule).getExternalId() + "&program=" + ((AcademicProgram)program).getExternalId() %>
+														</bean:define>
+														<button data-scope-id="${program.externalId}" data-auth-id="<bean:write name="rule" property="externalId" />" data-user-name="<bean:write name="memberRules" property="key.username" />" data-auth-name="<bean:write name="rule" property="operation.localizedName" />" data-scope-name="${office.name.content}" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default" title="<bean:message key="label.delete"/>">
 															<bean:write name="program" property="presentationName"/>
 															<span class="glyphicon glyphicon-remove"></span>
 														</button>
@@ -167,7 +152,7 @@
 										</logic:notEmpty>
 										</table>						
 									</td>
-									
+
 								</tr>
 					   	  						
 							</logic:iterate>
@@ -178,10 +163,88 @@
 			</div>
 		</div>
 	</logic:iterate>
-</div>
+	</div>
+	
+	<div class="col-lg-4">
+			<div class="panel-group" id="cursos_acc" data-spy="affix" data-offset-top="200">
+			
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseOne">
+								<bean:message key="portal.academicAdminOffice" bundle="ACADEMIC_OFFICE_RESOURCES" />
+							</a>
+						</h3>
+					</div>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<logic:iterate id="office" name="authorizationsBean" property="administrativeOffices" 
+										   type="org.fenixedu.academic.domain.administrativeOffice.AdministrativeOffice">
+								<div class="draggable_course office">
+									<div id="oid" style="display:none"><bean:write name="office" property="oid"/></div>
+									<div id="presentationName" style="display:none"><bean:write name="office" property="unit.name"/></div>
+									<div id="name"><bean:write name="office" property="unit.name"/></div>
+								</div>
+							</logic:iterate>
+						</div>
+					</div>
+				</div>
+		
+				<logic:iterate id="degreeType" name="authorizationsBean" property="degreeTypes" type="org.fenixedu.academic.domain.degree.DegreeType">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapse${degreeType.externalId}">
+								<bean:write name="degreeType" property="name.content" bundle="ACADEMIC_OFFICE_RESOURCES"/>
+							</a>
+						</h3>
+					</div>
+					<div id="collapse${degreeType.externalId}" class="panel-collapse collapse">
+						<div class="panel-body">
+							<logic:iterate id="degree" name="authorizationsBean" property="degrees">
+								<logic:equal value="${degreeType}" name="degree" property="degreeType">
+										<div class="draggable_course degree">
+											<div id="oid" style="display:none"><bean:write name="degree" property="oid"/></div>
+											<div id="presentationName" style="display:none"><bean:write name="degree" property="presentationName"/></div>
+											<div id="name"><bean:write name="degree" property="name"/></div>
+										</div>
+								</logic:equal>
+							</logic:iterate>
+						</div>
+					</div>
+				</div>
+				</logic:iterate>
+
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseTwo">
+								<bean:message key="title.phd.programs" bundle="PHD_RESOURCES"/>
+							</a>
+						</h3>
+					</div>
+					<div id="collapseTwo" class="panel-collapse collapse">
+						<div class="panel-body">
+							<logic:iterate id="program" name="authorizationsBean" property="phdPrograms" 
+										   type="org.fenixedu.academic.domain.phd.PhdProgram">
+								<div class="draggable_course degree">
+									<div id="oid" style="display:none"><bean:write name="program" property="oid"/></div>
+									<div id="presentationName" style="display:none"><bean:write name="program" property="presentationName"/></div>
+									<div id="name"><bean:write name="program" property="name"/></div>
+								</div>
+							</logic:iterate>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
 
 
-<!-- Modal Dialog -->
+
+
+
+<!-- Modal Dialog to delete office or course -->
 <div class="modal fade" id="confirmDeleteScope" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -200,7 +263,7 @@
   </div>
 </div>
 
-<!-- Modal Dialog -->
+<!-- Modal Dialog to delete authorization-->
 <div class="modal fade" id="confirmDeleteRule" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

@@ -18,13 +18,18 @@
  */
 package org.fenixedu.academic.ui.struts.action.academicAdministration;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.academic.domain.AcademicProgram;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicAccessRule;
+import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType;
+import org.fenixedu.academic.domain.administrativeOffice.AdministrativeOffice;
 import org.fenixedu.academic.ui.struts.action.base.FenixDispatchAction;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.struts.annotations.Forward;
@@ -49,21 +54,17 @@ public class PersonAuthorizations extends FenixDispatchAction {
     public ActionForward personsAuthorizations(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) {
 
+        AuthorizationsManagementBean bean = getRenderedObject("authorizationsBean");
+
+        bean = new AuthorizationsManagementBean(AcademicOperationType.valueOf("MANAGE_AUTHORIZATIONS"));
+
+        request.setAttribute("authorizationsBean", bean);
+
         final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations();
 
         request.setAttribute("groups", userAcademicOperationTypes.asMap());
         return mapping.findForward("authorizationsByPerson");
     }
-
-//    public ActionForward manageOperation(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
-//            HttpServletResponse response) {
-//
-//        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations(request.getParameter("username"));
-//
-//        request.setAttribute("authorizations", userAcademicOperationTypes.asMap());
-//
-//        return mapping.findForward("managePersonAuthorization");
-//    }
 
     private Multimap<User, AcademicAccessRule> getAuthorizations() {
         final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
@@ -77,23 +78,10 @@ public class PersonAuthorizations extends FenixDispatchAction {
         return userAcademicOperationTypes;
     }
 
-//    private Multimap<User, AcademicAccessRule> getAuthorizations(String username) {
-//        final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = HashMultimap.create();
-//
-//        AcademicAccessRule.accessRules().forEach(rule -> {
-//            rule.getWhoCanAccess().getMembers().forEach(user -> {
-//                if (user.getUsername().equals(username)) {
-//                    userAcademicOperationTypes.put(user, rule);
-//                }
-//            });
-//        });
-//
-//        return userAcademicOperationTypes;
-//    }
-
     public ActionForward revokeRule(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) {
         final AcademicAccessRule rule = getDomainObject(request, "ruleId");
+
         revoke(rule);
         return personsAuthorizations(mapping, actionForm, request, response);
     }
@@ -102,5 +90,48 @@ public class PersonAuthorizations extends FenixDispatchAction {
     private void revoke(AcademicAccessRule rule) {
         rule.revoke();
     }
+
+    @Atomic(mode = TxMode.WRITE)
+    public ActionForward editAuthorizationOffice(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse response) {
+
+        final AcademicAccessRule rule = getDomainObject(request, "ruleId");
+        final AdministrativeOffice office = getDomainObject(request, "office");
+
+        final Set<AdministrativeOffice> offices = rule.getOfficeSet();
+        final Set<AcademicProgram> programs = rule.getProgramSet();
+
+        offices.remove(office);
+
+        rule.changeProgramsAndOffices(programs, offices);
+
+        return personsAuthorizations(mapping, actionForm, request, response);
+    }
+
+    @Atomic(mode = TxMode.WRITE)
+    public ActionForward editAuthorizationProgram(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+            HttpServletResponse response) {
+
+        final AcademicAccessRule rule = getDomainObject(request, "ruleId");
+
+        final AcademicProgram program = getDomainObject(request, "program");
+
+        final Set<AdministrativeOffice> offices = rule.getOfficeSet();
+        final Set<AcademicProgram> programs = rule.getProgramSet();
+        programs.remove(program);
+
+        rule.changeProgramsAndOffices(programs, offices);
+
+        return personsAuthorizations(mapping, actionForm, request, response);
+    }
+//    
+//    public ActionForward addAuthorization(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+//            HttpServletResponse response) {
+//
+//        final AcademicAccessRule rule = new AcademicAccessRule(operation, whoCanAccess, whatCanAffect)
+//
+//
+//        return personsAuthorizations(mapping, actionForm, request, response);
+//    }
 
 }

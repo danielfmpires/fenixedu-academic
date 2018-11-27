@@ -474,6 +474,8 @@ a,input,.symbol {
 				
 		var oid = $(ui.draggable).children('#oid').html();
 		
+		
+		
 		var oids = $(this).find(list).children().find("#oid");
 
 		for(i = 0; i < oids.length; i++) {
@@ -484,18 +486,22 @@ a,input,.symbol {
 		
 		var name = $(ui.draggable).children('#presentationName').html();
 				
-		$(this).find(list).
-			prepend(
-				'<li><div id="oid" style="display:none">' + oid + '</div>'
-				+ name + '<img src="../images/iconRemoveOff.png" alt="remove"/>');
+// 		$(this).find(list).
+// 			prepend(
+// 				'<li><div id="oid" style="display:none">' + oid + '</div>'
+// 				+ name + '<img src="../images/iconRemoveOff.png" alt="remove"/>');
 
-		$(this).find(list + " li img").first().click(removeFunction);
-		if(!$(this).hasClass("newObject")) {
-			$(this).find(".saveButton").show();
-			showLeaveWarning();
-		} else {
-			$(this).find(".confirmar").attr("disabled", false);
-		}
+		$(this).find(list).append('<tr><td>'+oid+'</td></tr>');
+		
+		console.log($(this).find(list).append('<tr><td>'+oid+'</td></tr>'));
+
+// 		$(this).find(list + " li img").first().click(removeFunction);
+// 		if(!$(this).hasClass("newObject")) {
+// 			$(this).find(".saveButton").show();
+// 			showLeaveWarning();
+// 		} else {
+// 			$(this).find(".confirmar").attr("disabled", false);
+// 		}
 	}
 
 	function showLeaveWarning() {
@@ -608,7 +614,11 @@ a,input,.symbol {
 				});
 				
 				
-				$('.period').droppable({
+// 				$('.period').droppable({
+// 					drop: dropFunction
+// 				});
+
+				$('.auth').droppable({
 					drop: dropFunction
 				});
 
@@ -651,6 +661,57 @@ a,input,.symbol {
 				$('.period').children('header').click(function() {
 					$(this).parent().find('ul').slideToggle('fast');
 				});
+				
+				$('#confirmDeleteScope').on('show.bs.modal', function (e) {
+				      var $scopeName = $(e.relatedTarget).attr('data-scope-name');
+				      var $scopeId = $(e.relatedTarget).attr('data-scope-id');
+				      var $userName = $(e.relatedTarget).attr('data-user-name');
+				      var $authName = $(e.relatedTarget).attr('data-auth-name');
+				      var $authId = $(e.relatedTarget).attr('data-auth-id');
+				      var $message = "Are you sure you want to delete '" + $scopeName + "' from '" + $userName + "' in authorization '" + $authName + "' ?";
+				      $(this).find('.modal-body p').text($message);
+				      var $title = "Delete '" + $scopeName + "'";
+				      var $scopeId = $(e.relatedTarget).attr('data-scope-id');
+				      $(this).find('.modal-title').text($title);
+
+				      $('#confirmDeleteScope').find('.modal-footer #confirm').on('click', function(){
+				    	  $.ajax({
+		                      url: $(e.relatedTarget).attr('data-url'),
+		                      type: 'GET',
+		                      success: function(result) {
+		                    	  $('#'+$authId).find('#'+$scopeId).hide();
+		                    	  $('#confirmDeleteScope').modal('hide');
+							    }
+							});
+				    	  return;
+					  });
+				      return;
+				  });
+			
+				$('#confirmDeleteRule').on('show.bs.modal', function (e) {
+				      var $userName = $(e.relatedTarget).attr('data-user-name');
+				      var $authName = $(e.relatedTarget).attr('data-auth-name');
+				      var $authId = $(e.relatedTarget).attr('data-auth-id');
+				      var $message = "Are you sure you want to revoke the rule '" + $authName + "' from '" + $userName + "' ?";
+				      $(this).find('.modal-body p').text($message);
+				      var $title = "Delete '" + $authName + "'";
+				      $(this).find('.modal-title').text($title);
+	
+	
+				      $('#confirmDeleteRule').find('.modal-footer #confirm').on('click', function(){
+				    	  
+				    	  $.ajax({
+		                      url: $(e.relatedTarget).attr('data-url'),
+		                      type: 'GET',
+		                      success: function(result) {
+		                    	  $('#'+$authId).hide();
+		                    	  $('#confirmDeleteRule').modal('hide');
+							    }
+							});
+				    	  return;
+					  });
+				      return;
+				  });
 				
 			});
 
