@@ -27,10 +27,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.fenixedu.academic.domain.AcademicProgram;
+import org.fenixedu.academic.domain.Degree;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicAccessRule;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType;
 import org.fenixedu.academic.domain.administrativeOffice.AdministrativeOffice;
+import org.fenixedu.academic.domain.phd.PhdProgram;
 import org.fenixedu.academic.ui.struts.action.base.FenixDispatchAction;
+import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.struts.annotations.Forward;
 import org.fenixedu.bennu.struts.annotations.Mapping;
@@ -54,15 +57,23 @@ public class PersonAuthorizations extends FenixDispatchAction {
     public ActionForward personsAuthorizations(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) {
 
-        AuthorizationsManagementBean bean = getRenderedObject("authorizationsBean");
-
-        bean = new AuthorizationsManagementBean(AcademicOperationType.valueOf("MANAGE_AUTHORIZATIONS"));
-
-        request.setAttribute("authorizationsBean", bean);
+//        AuthorizationsManagementBean bean = getRenderedObject("authorizationsBean");
+//        bean = new AuthorizationsManagementBean(AcademicOperationType.valueOf("MANAGE_AUTHORIZATIONS"));
 
         final Multimap<User, AcademicAccessRule> userAcademicOperationTypes = getAuthorizations();
+        final AcademicOperationType[] operations = AcademicOperationType.class.getEnumConstants();
+        final Set<AdministrativeOffice> offices = Bennu.getInstance().getAdministrativeOfficesSet();
+        final Set<Degree> degrees = Bennu.getInstance().getDegreesSet();
+        final Set<PhdProgram> phdPrograms = Bennu.getInstance().getPhdProgramsSet();
+
+//        request.setAttribute("authorizationsBean", bean);
 
         request.setAttribute("groups", userAcademicOperationTypes.asMap());
+        request.setAttribute("operations", operations);
+        request.setAttribute("offices", offices);
+        request.setAttribute("degrees", degrees);
+        request.setAttribute("phdPrograms", phdPrograms);
+
         return mapping.findForward("authorizationsByPerson");
     }
 
