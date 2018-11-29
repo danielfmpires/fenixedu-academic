@@ -19,6 +19,7 @@
 
 --%>
 <%@page import="org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!--[if lt IE 9]>
 	<script>
@@ -440,9 +441,73 @@ a,input,.symbol {
 
 </style>
 
+<spring:url var="revokeUrl" value="/personsAuthorizationsSRPING/revoke"/>
+<spring:url var="addUrl" value="/personsAuthorizationsSRPING/addRule"/>
+<spring:url var="modifyOffice" value="/personsAuthorizationsSRPING/modifyOffice"/>
+<spring:url var="modifyProgram" value="/personsAuthorizationsSRPING/modifyProgram"/>
+
 <script src="${pageContext.request.contextPath}/javaScript/jquery/jquery-ui.js"></script>
 
 <script type="text/javascript">
+
+
+
+	function modifyScope($scopeId, $authId, $url, $action) {
+	
+		response = false;
+		response = $.ajax({
+			data: {"rule": $authId, "scope": $scopeId, "action": $action},
+	      	url: $url,
+	      	type: 'POST',
+	      	headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+	      	success: function(result) {
+	    	  	return result.responseText;
+		    }
+	  	});
+	    return response;
+	      
+	  };
+	  
+	  function revokeRule($userName, $authName, $authId) {
+	      
+	      var $message = "Are you sure you want to revoke the rule '" + $authName + "' from '" + $userName + "' ?";
+	      $('#confirmDeleteRule').find('.modal-body p').text($message);
+	      var $title = "Delete '" + $authName + "'";
+	      $('#confirmDeleteRule').find('.modal-title').text($title);
+
+	      $('#confirmDeleteRule').find('.modal-footer #confirm').on('click', function(){
+	    	  
+	    	  $.ajax({
+	    		  data: {"rule": $authId},
+                  url: "${revokeUrl}",
+                  type: 'POST',
+                  headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+                  success: function(result) {
+                	  $('#'+$authId).hide();
+                	  $('#confirmDeleteRule').modal('hide');
+				    }
+				});
+	    	  return;
+		  });
+	      return;
+	  };
+	  
+	  
+	  function addRule($user, $operation){
+		  
+		  response = false;
+		  response = $.ajax({
+    		  data: {"operation": $operation, "user": $user},
+              url: "${addUrl}",
+              type: 'POST',
+              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+              success: function(result) {
+            	  alert(result.responseText);
+            	  return result;
+			    }
+			});
+		  return response;
+	  }
 
 	function removeFunction() {
 		if($(this).parents().eq(2).hasClass('inactive'))
@@ -463,24 +528,40 @@ a,input,.symbol {
 	function dropFunction(event, ui) {
 		if(!$(ui.draggable).hasClass("course-dragging"))
 			return;
-		
+		var authId = $(this).attr('id');
+		var userName = $(this).parent().parent().attr('id');
+		var userId = $(this).parent().parent().parent().attr('id');
+		var operation = $(this).find('td:nth-child(1) button').attr('data-auth-name');
 		var name = $(ui.draggable).children('#presentationName').html();
-		
+			
 		var list;
 		if($(ui.draggable).hasClass("office")){
-			list = ".offices-list";
-			$(this).find('td:nth-child(2)').append('<tr><td><button data-url="test" style="margin-bottom: 2px;">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
+			var scopeId = $(ui.draggable).children('#oid').html();
+			var url = "${modifyOffice}";
+			var newScopeId = modifyScope(scopeId, authId, url, "add")
+			if(newScopeId){
+				$(this).find('td:nth-child(2)').append('<tr><td><button style="margin-bottom: 2px;" data-scope-id="'+newScopeId+'" data-auth-id="'+authId+'" data-url="'+url+'" data-user-name="'+userName+'" data-auth-name="'+operation+'" data-scope-name="'+name+'" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
+			}
 			
-			console.log(this.getAttribute('id'));
-			console.log($(ui.draggable).children('#data-url').html());
-			
-// 			modifyScope($scopeName, $scopeId, $userName, $authName, $authId, $url)
-		
 		}else if($(ui.draggable).hasClass("program")){
-			list = ".programs-list";
-			$(this).find('td:nth-child(3)').append('<tr><td><button style="margin-bottom: 2px;">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
+			var scopeId = $(ui.draggable).children('#oid').html();
+			var url = "${modifyProgram}";
+			var newScopeId = modifyScope(scopeId, authId, url, "add")
+			if(newScopeId){
+				$(this).find('td:nth-child(3)').append('<tr><td><button style="margin-bottom: 2px;" data-scope-id="'+newScopeId+'" data-auth-id="'+authId+'" data-url="'+url+'" data-user-name="'+userName+'" data-auth-name="'+operation+'" data-scope-name="'+name+'" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
+			}
+			
+
 		}else if($(ui.draggable).hasClass("authorization")){
-			list = ".authorizations-list"
+			var operation = $(ui.draggable).children('#operationName').html();
+			var newRuleId = addRule(userId,operation);
+			console.log(newRuleId);
+			if(newRuleId){
+				$(this).parent().append('<tr class="auth ui-droppable" id=""><td><button data-user-name="'+userName+'" data-auth-id="'+newRuleId+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td> </td> <td> </td> </tr>');
+			}
+			
+		}else{
+			return;
 		}
 				
 	}
@@ -651,67 +732,38 @@ a,input,.symbol {
 			        var $authName = $(e.relatedTarget).attr('data-auth-name');
 			        var $authId = $(e.relatedTarget).attr('data-auth-id');
 			        var $url = $(e.relatedTarget).attr('data-url');
+					var $action = "remove";
 					
-			        modifyScope($scopeName, $scopeId, $userName, $authName, $authId, $url);
-					
-				});
-			
-				
-				function modifyScope($scopeName, $scopeId, $userName, $authName, $authId, $url) {
-				      				      
-				      var $message = "Are you sure you want to delete '" + $scopeName + "' from '" + $userName + "' in authorization '" + $authName + "' ?";
+					var $message = "Are you sure you want to remove '" + $scopeName + "' from '" + $userName + "' in authorization '" + $authName + "' ?";
 				      $('#confirmDeleteScope').find('.modal-body p').text($message);
 				      var $title = "Delete '" + $scopeName + "'";
 				      $('#confirmDeleteScope').find('.modal-title').text($title);
+				    
+				    $('#confirmDeleteScope').find('.modal-footer #confirm').on('click', function(){
+				    	if(modifyScope($scopeId, $authId, $url, $action)){
+				    		$('#'+$authId).find('#'+$scopeId).hide();
+	                  	  	$('#confirmDeleteScope').modal('hide');
+				    	}
+				    	
+				    });
+				    
+				    return;
+					
+				});
+			
 
-				      $('#confirmDeleteScope').find('.modal-footer #confirm').on('click', function(){
-				    	  $.ajax({
-		                      url: $url,
-		                      type: 'GET',
-		                      success: function(result) {
-		                    	  $('#'+$authId).find('#'+$scopeId).hide();
-		                    	  $('#confirmDeleteScope').modal('hide');
-							    }
-							});
-				    	  return;
-					  });
-				      return;
-				  };
-				
-				
 				$('#confirmDeleteRule').on('show.bs.modal', function(e){ 
 				
 					var $userName = $(e.relatedTarget).attr('data-user-name');
 				    var $authName = $(e.relatedTarget).attr('data-auth-name');
 				    var $authId = $(e.relatedTarget).attr('data-auth-id');
-				    var $url = $(e.relatedTarget).attr('data-url');
 					
-				    modifyRule($userName, $authName, $authId);
+				    revokeRule($userName, $authName, $authId);
 					
 				});
+
+
 				
-				function modifyRule($userName, $authName, $authId) {
-				      
-				      var $message = "Are you sure you want to revoke the rule '" + $authName + "' from '" + $userName + "' ?";
-				      $('#confirmDeleteRule').find('.modal-body p').text($message);
-				      var $title = "Delete '" + $authName + "'";
-				      $('#confirmDeleteRule').find('.modal-title').text($title);
-	
-	
-				      $('#confirmDeleteRule').find('.modal-footer #confirm').on('click', function(){
-				    	  
-				    	  $.ajax({
-		                      url: $url,
-		                      type: 'GET',
-		                      success: function(result) {
-		                    	  $('#'+$authId).hide();
-		                    	  $('#confirmDeleteRule').modal('hide');
-							    }
-							});
-				    	  return;
-					  });
-				      return;
-				  };
 				
 			});
 
