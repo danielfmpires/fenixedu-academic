@@ -37,7 +37,7 @@
 				  				<td>
 				  					<table class="office-list">
 				  						<c:forEach var="office" items="${auth.office}">
-				  							<tr style="bottom:1px"><td id="${office.externalId}" >
+				  							<tr style="bottom:1px" id="${office.externalId}"><td>
 				  							<button style="margin-bottom: 2px;" data-scope-id="${office.externalId}" data-auth-id="${auth.externalId}" data-url="${modifyOffice}" data-user-name="${group.key.username}" data-auth-name="${auth.operation.localizedName}" data-scope-name="${office.name.content}" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default" title=<spring:message code="label.delete"/>>
 												${office.name.content}
 												<span class="glyphicon glyphicon-remove"></span>
@@ -49,7 +49,7 @@
 				  				<td>
 									<table class="program-list">
 				  						<c:forEach var="program" items="${auth.program}">
-				  							<tr style="bottom:1px"><td id="${program.externalId}" >
+				  							<tr style="bottom:1px" id="${program.externalId}" ><td >
 				  							<button style="margin-bottom: 2px;" data-scope-id="${program.externalId}" data-auth-id="${auth.externalId}" data-url="${modifyProgram}" data-user-name="${group.key.username}" data-auth-name="${auth.operation.localizedName}" data-scope-name="${program.presentationName}" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default" title=<spring:message code="label.delete"/>>
 												${program.presentationName}
 												<span class="glyphicon glyphicon-remove"></span>

@@ -1,6 +1,6 @@
 <%--
 
-    Copyright © 2013 Instituto Superior Técnico
+    Copyright ï¿½ 2013 Instituto Superior Tï¿½cnico
 
     This file is part of FenixEdu IST Integration.
 

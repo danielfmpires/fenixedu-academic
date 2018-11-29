@@ -95,6 +95,7 @@ public class PersonAuthorizations {
     }
 
     @RequestMapping(path = "modifyOffice", method = RequestMethod.POST)
+    @ResponseBody
     public String editAuthorizationOffice(Model model, @RequestParam AcademicAccessRule rule,
             @RequestParam AdministrativeOffice scope, @RequestParam String action) {
 
@@ -106,7 +107,7 @@ public class PersonAuthorizations {
             removeOffice(rule, scope, offices);
         }
 
-        return "authorizations/authorizationsByPerson";
+        return scope.getExternalId();
     }
 
     @Atomic(mode = TxMode.WRITE)
@@ -120,6 +121,7 @@ public class PersonAuthorizations {
     }
 
     @RequestMapping(path = "modifyProgram", method = RequestMethod.POST)
+    @ResponseBody
     public String editAuthorizationProgram(Model model, @RequestParam AcademicAccessRule rule,
             @RequestParam AcademicProgram scope, @RequestParam String action) {
 
@@ -131,7 +133,7 @@ public class PersonAuthorizations {
             removeProgram(rule, scope, programs);
         }
 
-        return "authorizations/authorizationsByPerson";
+        return scope.getExternalId();
     }
 
     @Atomic(mode = TxMode.WRITE)

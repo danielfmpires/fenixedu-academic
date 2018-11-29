@@ -451,9 +451,8 @@ a,input,.symbol {
 <script type="text/javascript">
 
 
-
 	function modifyScope($scopeId, $authId, $url, $action) {
-	
+		
 		response = false;
 		response = $.ajax({
 			data: {"rule": $authId, "scope": $scopeId, "action": $action},
@@ -461,12 +460,13 @@ a,input,.symbol {
 	      	type: 'POST',
 	      	headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
 	      	success: function(result) {
-	    	  	return result.responseText;
+	    	  	return;
 		    }
 	  	});
 	    return response;
 	      
 	  };
+
 	  
 	  function revokeRule($userName, $authName, $authId) {
 	      
@@ -493,21 +493,6 @@ a,input,.symbol {
 	  };
 	  
 	  
-	  function addRule($user, $operation){
-		  
-		  response = false;
-		  response = $.ajax({
-    		  data: {"operation": $operation, "user": $user},
-              url: "${addUrl}",
-              type: 'POST',
-              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
-              success: function(result) {
-            	  alert(result.responseText);
-            	  return result;
-			    }
-			});
-		  return response;
-	  }
 
 	function removeFunction() {
 		if($(this).parents().eq(2).hasClass('inactive'))
@@ -533,33 +518,57 @@ a,input,.symbol {
 		var userId = $(this).parent().parent().parent().attr('id');
 		var operation = $(this).find('td:nth-child(1) button').attr('data-auth-name');
 		var name = $(ui.draggable).children('#presentationName').html();
-			
-		var list;
+		var obj = $(this);
+		
+		
 		if($(ui.draggable).hasClass("office")){
 			var scopeId = $(ui.draggable).children('#oid').html();
-			var url = "${modifyOffice}";
-			var newScopeId = modifyScope(scopeId, authId, url, "add")
-			if(newScopeId){
-				$(this).find('td:nth-child(2)').append('<tr><td><button style="margin-bottom: 2px;" data-scope-id="'+newScopeId+'" data-auth-id="'+authId+'" data-url="'+url+'" data-user-name="'+userName+'" data-auth-name="'+operation+'" data-scope-name="'+name+'" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
-			}
+			var obj = $(this);
+			$.ajax({
+				data: {"rule": authId, "scope": scopeId, "action": "add"},
+		      	url: "${modifyOffice}",
+		      	type: 'POST',
+	            dataType: 'json',
+		      	headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+		      	success: function(result) {
+		      		$(obj).find('td:nth-child(2)').append('<tr id="'+result+'"><td><button style="margin-bottom: 2px;" data-scope-id="'+result+'" data-auth-id="'+authId+'" data-url="${modifyOffice}" data-user-name="'+userName+'" data-auth-name="'+operation+'" data-scope-name="'+name+'" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
+					
+			    }
+		  	});
 			
 		}else if($(ui.draggable).hasClass("program")){
 			var scopeId = $(ui.draggable).children('#oid').html();
-			var url = "${modifyProgram}";
-			var newScopeId = modifyScope(scopeId, authId, url, "add")
-			if(newScopeId){
-				$(this).find('td:nth-child(3)').append('<tr><td><button style="margin-bottom: 2px;" data-scope-id="'+newScopeId+'" data-auth-id="'+authId+'" data-url="'+url+'" data-user-name="'+userName+'" data-auth-name="'+operation+'" data-scope-name="'+name+'" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
-			}
 			
+			$.ajax({
+				data: {"rule": authId, "scope": scopeId, "action": "add"},
+		      	url: "${modifyProgram}",
+		      	type: 'POST',
+	            dataType: 'json',
+		      	headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+		      	success: function(result) {
+		      		$(obj).find('td:nth-child(3)').append('<tr id="'+result+'"><td><button style="margin-bottom: 2px;" data-scope-id="'+result+'" data-auth-id="'+authId+'" data-url="${modifyProgram}" data-user-name="'+userName+'" data-auth-name="'+operation+'" data-scope-name="'+name+'" data-toggle="modal" data-target="#confirmDeleteScope" class="btn btn-default">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
+			    }
+		  	});
+		
 
 		}else if($(ui.draggable).hasClass("authorization")){
 			var operation = $(ui.draggable).children('#operationName').html();
-			var newRuleId = addRule(userId,operation);
-			console.log(newRuleId);
-			if(newRuleId){
-				$(this).parent().append('<tr class="auth ui-droppable" id=""><td><button data-user-name="'+userName+'" data-auth-id="'+newRuleId+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td> </td> <td> </td> </tr>');
-			}
 			
+
+			$.ajax({
+	    		  data: {"operation": operation, "user": userId},
+	              url: "${addUrl}",
+	              type: 'POST',
+	              dataType: 'json',
+	              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+	              success: function(result) {
+	            	  $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td> </td> <td> </td> </tr>');
+	              		$(obj).parent('#'+result).droppable();
+	              }
+				});
+			
+			
+				
 		}else{
 			return;
 		}

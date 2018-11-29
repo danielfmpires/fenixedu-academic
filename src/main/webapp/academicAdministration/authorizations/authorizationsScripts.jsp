@@ -1,6 +1,6 @@
 <%--
 
-    Copyright ¬© 2002 Instituto Superior T√©cnico
+    Copyright © 2002 Instituto Superior TÈcnico
 
     This file is part of FenixEdu Academic.
 
@@ -464,30 +464,43 @@ a,input,.symbol {
 		if(!$(ui.draggable).hasClass("course-dragging"))
 			return;
 		
-		var name = $(ui.draggable).children('#presentationName').html();
+		var list = $(ui.draggable).hasClass("office") ? ".offices-list" : ".courses-list";
 		
-		var list;
-		if($(ui.draggable).hasClass("office")){
-			list = ".offices-list";
-			$(this).find('td:nth-child(2)').append('<tr><td><button data-url="test" style="margin-bottom: 2px;">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
-			
-			console.log(this.getAttribute('id'));
-			console.log($(ui.draggable).children('#data-url').html());
-			
-// 			modifyScope($scopeName, $scopeId, $userName, $authName, $authId, $url)
+		if($(ui.draggable).hasClass("office") && $(this).find("#offices").hasClass('inactive'))
+			return;
 		
-		}else if($(ui.draggable).hasClass("program")){
-			list = ".programs-list";
-			$(this).find('td:nth-child(3)').append('<tr><td><button style="margin-bottom: 2px;">'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"></td></tr>');
-		}else if($(ui.draggable).hasClass("authorization")){
-			list = ".authorizations-list"
-		}
+		if(!$(ui.draggable).hasClass("office") && $(this).find("#programs").hasClass('inactive'))
+			return;
 				
+		var oid = $(ui.draggable).children('#oid').html();
+		
+		var oids = $(this).find(list).children().find("#oid");
+
+		for(i = 0; i < oids.length; i++) {
+			if(oids.get(i).innerHTML == oid) {
+				return;
+			}
+		}
+		
+		var name = $(ui.draggable).children('#presentationName').html();
+				
+		$(this).find(list).
+			prepend(
+				'<li><div id="oid" style="display:none">' + oid + '</div>'
+				+ name + '<img src="../images/iconRemoveOff.png" alt="remove"/>');
+
+		$(this).find(list + " li img").first().click(removeFunction);
+		if(!$(this).hasClass("newObject")) {
+			$(this).find(".saveButton").show();
+			showLeaveWarning();
+		} else {
+			$(this).find(".confirmar").attr("disabled", false);
+		}
 	}
 
 	function showLeaveWarning() {
 		$(window).bind('beforeunload', function(){
-		    return "Tem altera√ß√µes n√£o guardadas. Tem a certeza que pretende sair da p√°gina?";
+		    return "Tem alteraÁıes n„o guardadas. Tem a certeza que pretende sair da p·gina?";
 		});
 		$("form").submit(function(){
 		    $(window).unbind("beforeunload");
@@ -595,11 +608,7 @@ a,input,.symbol {
 				});
 				
 				
-// 				$('.period').droppable({
-// 					drop: dropFunction
-// 				});
-
-				$('.auth').droppable({
+				$('.period').droppable({
 					drop: dropFunction
 				});
 
@@ -642,76 +651,6 @@ a,input,.symbol {
 				$('.period').children('header').click(function() {
 					$(this).parent().find('ul').slideToggle('fast');
 				});
-				
-				$('#confirmDeleteScope').on('show.bs.modal', function(e){ 
-					
-					var $scopeName = $(e.relatedTarget).attr('data-scope-name');
-			        var $scopeId = $(e.relatedTarget).attr('data-scope-id');
-			        var $userName = $(e.relatedTarget).attr('data-user-name');
-			        var $authName = $(e.relatedTarget).attr('data-auth-name');
-			        var $authId = $(e.relatedTarget).attr('data-auth-id');
-			        var $url = $(e.relatedTarget).attr('data-url');
-					
-			        modifyScope($scopeName, $scopeId, $userName, $authName, $authId, $url);
-					
-				});
-			
-				
-				function modifyScope($scopeName, $scopeId, $userName, $authName, $authId, $url) {
-				      				      
-				      var $message = "Are you sure you want to delete '" + $scopeName + "' from '" + $userName + "' in authorization '" + $authName + "' ?";
-				      $('#confirmDeleteScope').find('.modal-body p').text($message);
-				      var $title = "Delete '" + $scopeName + "'";
-				      $('#confirmDeleteScope').find('.modal-title').text($title);
-
-				      $('#confirmDeleteScope').find('.modal-footer #confirm').on('click', function(){
-				    	  $.ajax({
-		                      url: $url,
-		                      type: 'GET',
-		                      success: function(result) {
-		                    	  $('#'+$authId).find('#'+$scopeId).hide();
-		                    	  $('#confirmDeleteScope').modal('hide');
-							    }
-							});
-				    	  return;
-					  });
-				      return;
-				  };
-				
-				
-				$('#confirmDeleteRule').on('show.bs.modal', function(e){ 
-				
-					var $userName = $(e.relatedTarget).attr('data-user-name');
-				    var $authName = $(e.relatedTarget).attr('data-auth-name');
-				    var $authId = $(e.relatedTarget).attr('data-auth-id');
-				    var $url = $(e.relatedTarget).attr('data-url');
-					
-				    modifyRule($userName, $authName, $authId);
-					
-				});
-				
-				function modifyRule($userName, $authName, $authId) {
-				      
-				      var $message = "Are you sure you want to revoke the rule '" + $authName + "' from '" + $userName + "' ?";
-				      $('#confirmDeleteRule').find('.modal-body p').text($message);
-				      var $title = "Delete '" + $authName + "'";
-				      $('#confirmDeleteRule').find('.modal-title').text($title);
-	
-	
-				      $('#confirmDeleteRule').find('.modal-footer #confirm').on('click', function(){
-				    	  
-				    	  $.ajax({
-		                      url: $url,
-		                      type: 'GET',
-		                      success: function(result) {
-		                    	  $('#'+$authId).hide();
-		                    	  $('#confirmDeleteRule').modal('hide');
-							    }
-							});
-				    	  return;
-					  });
-				      return;
-				  };
 				
 			});
 

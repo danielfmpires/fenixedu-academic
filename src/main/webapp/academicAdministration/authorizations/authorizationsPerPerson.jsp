@@ -33,7 +33,7 @@
 			</h2>
 		</header>
 		
-		<html:messages id="message" message="true" bundle="ACADEMIC_OFFICE_RESOURCES" property="<%= ActionMessages.GLOBAL_MESSAGE %>" >
+		<html:messages id="message" message="true" bundle="ACADEMIC_OFFICE_RESOURCES" property='<%= ActionMessages.GLOBAL_MESSAGE %>' >
 			<p>
 				<span class="error0"><!-- Error messages go here --><bean:write name="message" /></span>
 			</p>
@@ -73,7 +73,7 @@
 
 				<fr:edit id="authorizationsBean" name="authorizationsBean" visible="false" />
 
-				<div id="period" class="authorization period <%= newObject ? "newObject" : "" %>">
+				<div id="period" class="authorization period  " >
 					<header id="header">
 						<h4>
 						<logic:notPresent name="group" property="party">
@@ -101,18 +101,18 @@
 							</fr:schema>
 						</fr:edit>
 						<fieldset class="botoes">
-							<html:button value="<%= newObject ? "Criar" : "Confirmar" %>" styleClass="confirmar" 
-							onclick="<%= newObject ? "createAuthorization($(this));" : "editAuthorization($(this), " + id + ");"%>" 
+							<html:button value='<%= newObject ? "Criar" : "Confirmar" %>' styleClass="confirmar" 
+							onclick='<%= newObject ? "createAuthorization($(this));" : "editAuthorization($(this), " + id + ");"%>' 
 							property="create" />
 							
 							<html:submit value="Cancelar" styleClass="cancelar" 
-								onclick="<%= newObject ? "reload(); return false;" : 
-								    					 "javascript:$(this).parents().eq(1).hide(); return false;" %>" property="removeNewAuthorization"/>
+								onclick='<%= newObject ? "reload(); return false;" : 
+								    					 "javascript:$(this).parents().eq(1).hide(); return false;" %>' property="removeNewAuthorization"/>
 						</fieldset>
 						
 						<logic:equal name="newObject" value="false">
 						<div class="links-authorization">
-							<a href="#" class="eliminar" onclick="<%= "deleteAuthorization($(this)," + id + ")"%>" style="color: red"><bean:message key="label.delete" bundle="APPLICATION_RESOURCES"/></a>
+							<a href="#" class="eliminar" onclick='<%= "deleteAuthorization($(this)," + id + ")"%>' style="color: red"><bean:message key="label.delete" bundle="APPLICATION_RESOURCES"/></a>
 						</div>
 						</logic:equal>
 					</div>
@@ -149,7 +149,7 @@
 					<ul class="placeholder-tip">
 						<li>
 						<html:submit value="Descartar Alterações" styleClass="btn btn-danger saveButton" onclick="reload(); return false;"/>
-						<html:button value="Guardar Alterações" styleClass="btn btn-success saveButton" onclick="<%= "editAuthorizationPrograms($(this).parents().eq(3), " + id + ");" %>" 
+						<html:button value="Guardar Alterações" styleClass="btn btn-success saveButton" onclick='<%= "editAuthorizationPrograms($(this).parents().eq(3), " + id + ");" %>' 
 								     property="saveChanges" style="margin-right: 8px;"/>
 						</li>
 					</ul>
