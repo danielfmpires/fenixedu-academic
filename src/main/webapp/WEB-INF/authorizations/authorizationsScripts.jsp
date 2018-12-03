@@ -36,6 +36,11 @@
 
 /* Typography */
 
+.btn {
+white-space: normal;
+word-wrap: break-word;
+}
+
 #authorizationList header {
 	margin-top: 0;
 	padding-top: 5px;
@@ -562,8 +567,10 @@ a,input,.symbol {
 	              dataType: 'json',
 	              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
 	              success: function(result) {
-	            	  $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td> </td> <td> </td> </tr>');
-	              		$(obj).parent('#'+result).droppable();
+	            	  var dropbl = $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td><table class="office-list"></table> </td> <td><table class="program-list"></table></td> </tr>');
+	              		console.log(dropbl.parent().find("#"+result));
+	              		dropbl.parent().find("#"+result).droppable();
+	              		dropbl.parent().find("#"+result).droppable("enable");
 	              }
 				});
 			
