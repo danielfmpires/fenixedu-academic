@@ -558,7 +558,6 @@ a,input,.symbol {
 
 		}else if($(ui.draggable).hasClass("authorization")){
 			var operation = $(ui.draggable).children('#operationName').html();
-			
 
 			$.ajax({
 	    		  data: {"operation": operation, "user": userId},
@@ -571,11 +570,14 @@ a,input,.symbol {
 	              		console.log(dropbl.parent().find("#"+result));
 	              		dropbl.parent().find("#"+result).droppable();
 	              		dropbl.parent().find("#"+result).droppable("enable");
+	              		
+	              		$('.auth').droppable({
+							drop: dropFunction
+						})
+	              		
 	              }
 				});
-			
-			
-				
+		
 		}else{
 			return;
 		}
