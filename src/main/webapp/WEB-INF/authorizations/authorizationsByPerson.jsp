@@ -4,8 +4,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<spring:url var="modifyOffice" value="/personsAuthorizationsSRPING/modifyOffice"/>
-<spring:url var="modifyProgram" value="/personsAuthorizationsSRPING/modifyProgram"/>
+<spring:url var="modifyOffice" value="/personsAuthorizations/modifyOffice"/>
+<spring:url var="modifyProgram" value="/personsAuthorizations/modifyProgram"/>
 
 <jsp:include page="authorizationsScripts.jsp" />
 

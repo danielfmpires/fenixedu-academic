@@ -453,7 +453,7 @@ a,input,.symbol {
 
 <script src="${pageContext.request.contextPath}/javaScript/jquery/jquery-ui.js"></script>
 
-<script type="text/javascript">
+<script>
 
 
 	function modifyScope($scopeId, $authId, $url, $action) {
