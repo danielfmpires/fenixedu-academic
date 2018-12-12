@@ -446,10 +446,10 @@ a,input,.symbol {
 
 </style>
 
-<spring:url var="revokeUrl" value="/personsAuthorizationsSRPING/revoke"/>
-<spring:url var="addUrl" value="/personsAuthorizationsSRPING/addRule"/>
-<spring:url var="modifyOffice" value="/personsAuthorizationsSRPING/modifyOffice"/>
-<spring:url var="modifyProgram" value="/personsAuthorizationsSRPING/modifyProgram"/>
+<spring:url var="revokeUrl" value="/personsAuthorizations/revoke"/>
+<spring:url var="addUrl" value="/personsAuthorizations/addRule"/>
+<spring:url var="modifyOffice" value="/personsAuthorizations/modifyOffice"/>
+<spring:url var="modifyProgram" value="/personsAuthorizations/modifyProgram"/>
 
 <script src="${pageContext.request.contextPath}/javaScript/jquery/jquery-ui.js"></script>
 
