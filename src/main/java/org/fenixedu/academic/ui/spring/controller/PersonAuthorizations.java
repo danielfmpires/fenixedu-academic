@@ -12,7 +12,6 @@ import org.fenixedu.academic.domain.administrativeOffice.AdministrativeOffice;
 import org.fenixedu.academic.domain.phd.PhdProgram;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.spring.portal.SpringApplication;
 import org.fenixedu.bennu.spring.portal.SpringFunctionality;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +27,8 @@ import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
 
 @Controller
-@SpringApplication(path = "personsAuthorizationsSRPING", hint = "Authorizations", group = "#managers",
-        title = "personsAuthorizations")
-@SpringFunctionality(app = PersonAuthorizations.class, title = "personsAuthorizationsSRPING")
-@RequestMapping("/personsAuthorizationsSRPING")
+@SpringFunctionality(app = AcademicAdministrationSpringApplication.class, title = "label.authorizationsByPerson")
+@RequestMapping("/personsAuthorizations")
 public class PersonAuthorizations {
 
     @RequestMapping(method = RequestMethod.GET)
