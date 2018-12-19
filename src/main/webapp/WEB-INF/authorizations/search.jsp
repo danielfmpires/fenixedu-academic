@@ -19,6 +19,7 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
 <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
+<jsp:include page="ui-autocomplete.jsp" />
 <jsp:include page="authorizationsScriptsSearch.jsp" />
 
 <form class="form-horizontal" action="${formAction}" method="GET">
