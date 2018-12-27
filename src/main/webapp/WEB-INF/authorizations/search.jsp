@@ -6,6 +6,7 @@
 
 <spring:url var="formAction" value="/search-authorizations/search"/>
 
+<spring:url var="navigation" value="/academic-admin-office/academic-administration/navigation"/>
 
 <script type="text/javascript">
 var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}",</c:forEach>};
@@ -89,23 +90,48 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 		  	</table>
 		</div>
 	</div>
-	
-	<div class="col-lg-4">
-		<div class="panel-group" id="cursos_acc" data-spy="affix" data-offset-top="200">
-			<div class="panel panel-default">
+
+</c:if>
+
+<div class="col-lg-4" style="float:right">
+	<div class="panel-group" id="cursos_acc" data-spy="affix" data-offset-top="200">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseOne">
+						<spring:message code="label.authorizations" />
+					</a>
+				</h3>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse">
+				<div class="panel-body">
+					<c:forEach var="operation" items="${operations}" >
+					<a href="${navigation}?operation=${operation}">
+						<div class="draggable_course authorization">
+							<div id="presentationName">${operation.localizedName}</div>
+							<div id="operationName" style="display:none">${operation}</div>
+						</div>
+					</a>
+					</c:forEach>
+				</div>
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseOne">
-							<spring:message code="label.authorizations" />
+						<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseTwo">
+							<spring:message code="portal.academicAdminOffice"/>
 						</a>
 					</h3>
 				</div>
-				<div id="collapseOne" class="panel-collapse collapse">
+				<div id="collapseTwo" class="panel-collapse collapse">
 					<div class="panel-body">
-						<c:forEach var="operation" items="${operations}" >
-							<div class="draggable_course authorization">
-								<div id="presentationName">${operation.localizedName}</div>
-								<div id="operationName" style="display:none">${operation}</div>
+						<c:forEach var="office" items="${offices}">
+							<div class="draggable_course office">
+								<div id="oid" style="display:none">${office.oid}</div>
+								<div id="presentationName" style="display:none">${office.unit.name}</div>
+								<div id="name">${office.unit.name}</div>
 							</div>
 						</c:forEach>
 					</div>
@@ -113,107 +139,85 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			</div>
 			
 			<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseTwo">
-								<spring:message code="portal.academicAdminOffice"/>
-							</a>
-						</h3>
-					</div>
-					<div id="collapseTwo" class="panel-collapse collapse">
-						<div class="panel-body">
-							<c:forEach var="office" items="${offices}">
-								<div class="draggable_course office">
-									<div id="oid" style="display:none">${office.oid}</div>
-									<div id="presentationName" style="display:none">${office.unit.name}</div>
-									<div id="name">${office.unit.name}</div>
-								</div>
-							</c:forEach>
-						</div>
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseThree">
+							<spring:message code="label.degrees"/>
+						</a>
+					</h3>
+				</div>
+				<div id="collapseThree" class="panel-collapse collapse">
+					<div class="panel-body">
+						<c:forEach var="degree" items="${degrees}">
+							<div class="draggable_course program">
+								<div id="oid" style="display:none">${degree.oid}</div>
+								<div id="presentationName" style="display:none">${degree.presentationName}</div>
+								<div id="name">${degree.name}</div>
+							</div>
+						</c:forEach>
 					</div>
 				</div>
-				
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseThree">
-								<spring:message code="label.degrees"/>
-							</a>
-						</h3>
-					</div>
-					<div id="collapseThree" class="panel-collapse collapse">
-						<div class="panel-body">
-							<c:forEach var="degree" items="${degrees}">
-								<div class="draggable_course program">
-									<div id="oid" style="display:none">${degree.oid}</div>
-									<div id="presentationName" style="display:none">${degree.presentationName}</div>
-									<div id="name">${degree.name}</div>
-								</div>
-							</c:forEach>
-						</div>
-					</div>
-				</div>
-				
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseFour">
-								<spring:message code="title.phd.programs"/>
-							</a>
-						</h3>
-					</div>
-					<div id="collapseFour" class="panel-collapse collapse">
-						<div class="panel-body">
-							<c:forEach var="program" items="${phdPrograms}">
-								<div class="draggable_course program">
-									<div id="oid" style="display:none">${program.oid}</div>
-									<div id="presentationName" style="display:none">${program.presentationName}</div>
-									<div id="name">${program.name}</div>
-								</div>
-							</c:forEach>
-						</div>
-					</div>
-				</div>
+			</div>
 			
-		</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<a data-toggle="collapse" data-parent="#cursos_acc" data-target="#collapseFour">
+							<spring:message code="title.phd.programs"/>
+						</a>
+					</h3>
+				</div>
+				<div id="collapseFour" class="panel-collapse collapse">
+					<div class="panel-body">
+						<c:forEach var="program" items="${phdPrograms}">
+							<div class="draggable_course program">
+								<div id="oid" style="display:none">${program.oid}</div>
+								<div id="presentationName" style="display:none">${program.presentationName}</div>
+								<div id="name">${program.name}</div>
+							</div>
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		
 	</div>
-	
-	
-	<!-- Modal Dialog to delete authorization-->
-	<div class="modal fade" id="confirmDeleteRule" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title"><spring:message code="label.spaces.delete.title"/></h4>
-	      </div>
-	      <div class="modal-body">
-	        <p><spring:message code="label.spaces.delete.message"/></p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
-			<button type="button" class="btn btn-danger" id="confirm"><spring:message code="label.delete"/></button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	
-	<!-- Modal Dialog to delete office or course -->
-	<div class="modal fade" id="confirmDeleteScope" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title"><spring:message code="label.spaces.delete.title"/></h4>
-	      </div>
-	      <div class="modal-body">
-	        <p><spring:message code="label.spaces.delete.message"/></p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
-	        <button type="button" class="btn btn-danger" id="confirm"><spring:message code="label.delete"/></button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-</c:if>
+</div>
+
+
+<!-- Modal Dialog to delete authorization-->
+<div class="modal fade" id="confirmDeleteRule" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><spring:message code="label.spaces.delete.title"/></h4>
+      </div>
+      <div class="modal-body">
+        <p><spring:message code="label.spaces.delete.message"/></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
+		<button type="button" class="btn btn-danger" id="confirm"><spring:message code="label.delete"/></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Dialog to delete office or course -->
+<div class="modal fade" id="confirmDeleteScope" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><spring:message code="label.spaces.delete.title"/></h4>
+      </div>
+      <div class="modal-body">
+        <p><spring:message code="label.spaces.delete.message"/></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
+        <button type="button" class="btn btn-danger" id="confirm"><spring:message code="label.delete"/></button>
+      </div>
+    </div>
+  </div>
+</div>

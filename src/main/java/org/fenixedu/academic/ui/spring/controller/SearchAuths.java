@@ -37,9 +37,17 @@ public class SearchAuths {
 
         final List<AcademicAccessRule> rules = new ArrayList<AcademicAccessRule>();
         final Map<String, String> users = getUsers();
+        final AcademicOperationType[] operations = AcademicOperationType.class.getEnumConstants();
+        final Set<AdministrativeOffice> offices = Bennu.getInstance().getAdministrativeOfficesSet();
+        final Set<Degree> degrees = Bennu.getInstance().getDegreesSet();
+        final Set<PhdProgram> phdPrograms = Bennu.getInstance().getPhdProgramsSet();
 
         model.addAttribute("result", rules);
         model.addAttribute("users", users);
+        model.addAttribute("operations", operations);
+        model.addAttribute("offices", offices);
+        model.addAttribute("degrees", degrees);
+        model.addAttribute("phdPrograms", phdPrograms);
 
         return "authorizations/search";
     }

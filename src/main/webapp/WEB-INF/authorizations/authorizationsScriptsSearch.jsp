@@ -38,7 +38,6 @@
 
 .btn {
 white-space: normal;
-word-wrap: break-word;
 }
 
 #authorizationList header {
