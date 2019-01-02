@@ -54,6 +54,7 @@ white-space: normal;
 	max-height: 90%;
 	min-height: 400px;
 	overflow-y: auto;
+	min-width: 25%;
 }
 
 #container {

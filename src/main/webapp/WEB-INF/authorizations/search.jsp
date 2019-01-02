@@ -94,7 +94,7 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 </c:if>
 
 <div class="col-lg-4" style="float:right">
-	<div class="panel-group" id="cursos_acc" data-spy="affix" data-offset-top="200">
+	<div class="panel-group" id="cursos_acc" data-offset-top="200">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">
