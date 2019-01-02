@@ -50,9 +50,9 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 		  			</tr>
 		  		</thead>
 		  		<tbody>
-		  			<c:if test="${result.size()==0}"><tr class="auth ui-droppable" style=""><td></td><td></td><td></td></tr></c:if>
+		  			<c:if test="${rules.size()==0}"><tr class="auth ui-droppable" style=""><td></td><td></td><td></td></tr></c:if>
 		  			
-			  		<c:forEach var="auth" items="${result}">
+			  		<c:forEach var="auth" items="${rules}">
 			  			<tr class="auth ui-droppable" id="${auth.externalId}">
 			  				<td>
 			  					<button data-user-name="${user.username}" data-auth-id="${auth.externalId}" data-auth-name="${auth.operation.localizedName}"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" title=<spring:message code="label.delete"/>>

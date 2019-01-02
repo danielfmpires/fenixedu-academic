@@ -13,6 +13,7 @@ import org.fenixedu.academic.domain.phd.PhdProgram;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.spring.portal.SpringFunctionality;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,7 +75,7 @@ public class PersonAuthorizations {
 
     @Atomic(mode = TxMode.WRITE)
     private String grantRule(AcademicOperationType operation, User user, Set<AcademicAccessTarget> targets) {
-        final AcademicAccessRule rule = new AcademicAccessRule(operation, user.groupOf(), targets);
+        final AcademicAccessRule rule = new AcademicAccessRule(operation, user.groupOf(), targets, new DateTime());
         return rule.getExternalId();
     }
 

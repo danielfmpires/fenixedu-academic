@@ -17,6 +17,7 @@ import org.fenixedu.academic.domain.phd.PhdProgram;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.spring.portal.SpringFunctionality;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class SearchAuths {
         final Set<Degree> degrees = Bennu.getInstance().getDegreesSet();
         final Set<PhdProgram> phdPrograms = Bennu.getInstance().getPhdProgramsSet();
 
-        model.addAttribute("result", rules);
+        model.addAttribute("rules", rules);
         model.addAttribute("users", users);
         model.addAttribute("operations", operations);
         model.addAttribute("offices", offices);
@@ -64,7 +65,7 @@ public class SearchAuths {
         final Set<PhdProgram> phdPrograms = Bennu.getInstance().getPhdProgramsSet();
 
         model.addAttribute("user", user);
-        model.addAttribute("result", rules);
+        model.addAttribute("rules", rules);
         model.addAttribute("users", users);
         model.addAttribute("operations", operations);
         model.addAttribute("offices", offices);
@@ -74,6 +75,7 @@ public class SearchAuths {
         return "authorizations/search";
     }
 
+    @Atomic(mode = TxMode.WRITE)
     private List<AcademicAccessRule> getAuthorizations(User user) {
         final List<AcademicAccessRule> userAcademicOperation = new ArrayList<AcademicAccessRule>();
 
@@ -104,15 +106,14 @@ public class SearchAuths {
     public String addRule(@RequestParam AcademicOperationType operation, @RequestParam User user) {
 
         final Set<AcademicAccessTarget> targets = new HashSet<AcademicAccessTarget>();
-
-        final String id = grantRule(operation, user, targets);
+        final String id = grantRule(operation, user, targets, new DateTime().plusMinutes(2));
 
         return id;
     }
 
     @Atomic(mode = TxMode.WRITE)
-    private String grantRule(AcademicOperationType operation, User user, Set<AcademicAccessTarget> targets) {
-        final AcademicAccessRule rule = new AcademicAccessRule(operation, user.groupOf(), targets);
+    private String grantRule(AcademicOperationType operation, User user, Set<AcademicAccessTarget> targets, DateTime validity) {
+        final AcademicAccessRule rule = new AcademicAccessRule(operation, user.groupOf(), targets, validity);
         return rule.getExternalId();
     }
 

@@ -82,11 +82,13 @@ public class AcademicAccessRule extends AcademicAccessRule_Base implements Compa
         }
     }
 
-    public AcademicAccessRule(AcademicOperationType operation, Group whoCanAccess, Set<AcademicAccessTarget> whatCanAffect) {
+    public AcademicAccessRule(AcademicOperationType operation, Group whoCanAccess, Set<AcademicAccessTarget> whatCanAffect,
+            DateTime validity) {
         super();
         setOperation(operation);
+        setValidity(validity);
         setPersistentGroup(whoCanAccess.toPersistentGroup());
-        for (AcademicAccessTarget target : whatCanAffect) {
+        for (final AcademicAccessTarget target : whatCanAffect) {
             target.write(this, operation);
         }
     }
@@ -94,6 +96,11 @@ public class AcademicAccessRule extends AcademicAccessRule_Base implements Compa
     @Override
     public AcademicOperationType getOperation() {
         return (AcademicOperationType) super.getOperation();
+    }
+
+    @Override
+    public DateTime getValidity() {
+        return super.getValidity();
     }
 
     @Override
@@ -115,7 +122,7 @@ public class AcademicAccessRule extends AcademicAccessRule_Base implements Compa
     }
 
     public AcademicAccessRule changeProgramsAndOffices(Set<AcademicProgram> programs, Set<AdministrativeOffice> offices) {
-        Set<AccessTarget> targets = new HashSet<>();
+        final Set<AccessTarget> targets = new HashSet<>();
         if (programs != null) {
             programs.stream().forEach(p -> targets.add(new AcademicProgramAccessTarget(p)));
         }
@@ -126,7 +133,7 @@ public class AcademicAccessRule extends AcademicAccessRule_Base implements Compa
     }
 
     public Stream<AcademicProgram> getFullProgramSet() {
-        Stream<AcademicProgram> managed = getOfficeSet().stream().flatMap(o -> o.getManagedAcademicProgramSet().stream());
+        final Stream<AcademicProgram> managed = getOfficeSet().stream().flatMap(o -> o.getManagedAcademicProgramSet().stream());
         return Stream.concat(Stream.concat(getProgramSet().stream(), managed), Stream.of(Degree.readEmptyDegree()));
     }
 
@@ -236,11 +243,11 @@ public class AcademicAccessRule extends AcademicAccessRule_Base implements Compa
 
     @Override
     public int compareTo(AcademicAccessRule o) {
-        int op = getOperation().compareTo(o.getOperation());
+        final int op = getOperation().compareTo(o.getOperation());
         if (op != 0) {
             return op;
         }
-        int group = getWhoCanAccess().compareTo(o.getWhoCanAccess());
+        final int group = getWhoCanAccess().compareTo(o.getWhoCanAccess());
         if (group != 0) {
             return group;
         }

@@ -54,6 +54,12 @@ public abstract class AccessRule extends AccessRule_Base {
     }
 
     @Override
+    public DateTime getValidity() {
+        // TODO remove when framework supports read-only slots
+        return super.getValidity();
+    }
+
+    @Override
     public AccessOperation<?, ?> getOperation() {
         // TODO remove when framework supports read-only slots
         return super.getOperation();
@@ -64,15 +70,36 @@ public abstract class AccessRule extends AccessRule_Base {
     }
 
     public Group getWhoCanAccess() {
-        return super.getPersistentGroup().toGroup();
+
+        final DateTime now = new DateTime();
+        if (now.isBefore(getValidity()) || getValidity() == null) {
+            return super.getPersistentGroup().toGroup();
+        } else {
+            revoke();
+            return super.getPersistentGroup().toGroup().nobody();
+        }
     }
 
     protected boolean isMember(User user) {
-        return getWhoCanAccess().isMember(user);
+
+        final DateTime now = new DateTime();
+        if (now.isBefore(getValidity()) || getValidity() == null) {
+            return getWhoCanAccess().isMember(user);
+        } else {
+            revoke();
+            return false;
+        }
     }
 
     protected boolean isMember(User user, DateTime when) {
-        return getWhoCanAccess().isMember(user, when);
+
+        final DateTime now = new DateTime();
+        if (now.isBefore(getValidity()) || getValidity() == null) {
+            return getWhoCanAccess().isMember(user, when);
+        } else {
+            revoke();
+            return false;
+        }
     }
 
     public <R extends AccessRule, T extends AccessTarget> Optional<R> changeWhoCanAccess(Group whoCanAccess) {

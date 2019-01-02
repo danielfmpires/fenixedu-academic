@@ -35,10 +35,11 @@ import org.fenixedu.academic.util.Bundle;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.groups.Group;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
-
-import pt.ist.fenixWebFramework.rendererExtensions.util.IPresentableEnum;
+import org.joda.time.DateTime;
 
 import com.google.common.collect.Sets;
+
+import pt.ist.fenixWebFramework.rendererExtensions.util.IPresentableEnum;
 
 public enum AcademicOperationType implements IPresentableEnum, AccessOperation<AcademicAccessRule, AcademicAccessTarget> {
     MANAGE_AUTHORIZATIONS(false, false, Scope.ADMINISTRATION),
@@ -183,9 +184,9 @@ public enum AcademicOperationType implements IPresentableEnum, AccessOperation<A
     static public Comparator<AcademicOperationType> COMPARATOR_BY_LOCALIZED_NAME = new Comparator<AcademicOperationType>() {
         @Override
         public int compare(final AcademicOperationType p1, final AcademicOperationType p2) {
-            String operationName1 = p1.getLocalizedName();
-            String operationName2 = p2.getLocalizedName();
-            int res = operationName1.compareTo(operationName2);
+            final String operationName1 = p1.getLocalizedName();
+            final String operationName2 = p2.getLocalizedName();
+            final int res = operationName1.compareTo(operationName2);
             return res;
         }
     };
@@ -223,35 +224,32 @@ public enum AcademicOperationType implements IPresentableEnum, AccessOperation<A
         if (whoCanAccess.equals(Group.nobody())) {
             return Optional.empty();
         }
-        Optional<AcademicAccessRule> match =
-                AcademicAccessRule
-                        .accessRules()
-                        .filter(r -> r.getOperation().equals(this) && r.getWhoCanAccess().equals(whoCanAccess)
-                                && Sets.symmetricDifference(r.getWhatCanAffect(), whatCanAffect).isEmpty()).findAny();
-        return Optional.of(match.orElseGet(() -> new AcademicAccessRule(this, whoCanAccess, whatCanAffect)));
+        final Optional<AcademicAccessRule> match = AcademicAccessRule.accessRules()
+                .filter(r -> r.getOperation().equals(this) && r.getWhoCanAccess().equals(whoCanAccess)
+                        && Sets.symmetricDifference(r.getWhatCanAffect(), whatCanAffect).isEmpty())
+                .findAny();
+        return Optional.of(match.orElseGet(() -> new AcademicAccessRule(this, whoCanAccess, whatCanAffect, new DateTime())));
     }
 
-    public Optional<AcademicAccessRule> grant(Group whoCanAccess, Set<AcademicProgram> programs, Set<AdministrativeOffice> offices) {
-        Set<AcademicAccessTarget> targets =
-                Stream.concat(programs.stream().map(AcademicProgramAccessTarget::new),
-                        offices.stream().map(AdministrativeOfficeAccessTarget::new)).collect(Collectors.toSet());
+    public Optional<AcademicAccessRule> grant(Group whoCanAccess, Set<AcademicProgram> programs,
+            Set<AdministrativeOffice> offices) {
+        final Set<AcademicAccessTarget> targets = Stream.concat(programs.stream().map(AcademicProgramAccessTarget::new),
+                offices.stream().map(AdministrativeOfficeAccessTarget::new)).collect(Collectors.toSet());
         return grant(whoCanAccess, targets);
     }
 
     @Override
     public Optional<AcademicAccessRule> grant(User user) {
-        Optional<AcademicAccessRule> match =
-                AcademicAccessRule.accessRules().filter(r -> r.getOperation().equals(this) && r.getWhatCanAffect().isEmpty())
-                        .findAny();
+        final Optional<AcademicAccessRule> match = AcademicAccessRule.accessRules()
+                .filter(r -> r.getOperation().equals(this) && r.getWhatCanAffect().isEmpty()).findAny();
         return match.map(r -> r.<AcademicAccessRule> grant(user)).orElseGet(
-                () -> Optional.of(new AcademicAccessRule(this, user.groupOf(), Collections.emptySet())));
+                () -> Optional.of(new AcademicAccessRule(this, user.groupOf(), Collections.emptySet(), new DateTime())));
     }
 
     @Override
     public Optional<AcademicAccessRule> revoke(User user) {
-        Optional<AcademicAccessRule> match =
-                AcademicAccessRule.accessRules().filter(r -> r.getOperation().equals(this) && r.getWhatCanAffect().isEmpty())
-                        .findAny();
+        final Optional<AcademicAccessRule> match = AcademicAccessRule.accessRules()
+                .filter(r -> r.getOperation().equals(this) && r.getWhatCanAffect().isEmpty()).findAny();
         return match.map(r -> r.<AcademicAccessRule> revoke(user)).orElse(Optional.empty());
     }
 }
