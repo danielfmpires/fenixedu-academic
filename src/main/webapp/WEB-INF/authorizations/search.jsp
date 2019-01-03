@@ -58,6 +58,7 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			  					<button data-user-name="${user.username}" data-auth-id="${auth.externalId}" data-auth-name="${auth.operation.localizedName}"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" title=<spring:message code="label.delete"/>>
 									${auth.operation.localizedName}
 									<span class="glyphicon glyphicon-remove"></span>
+									${auth.getValidity()}
 								</button>
 			  				</td>
 			  				<td>
@@ -181,6 +182,30 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			</div>
 		
 	</div>
+</div>
+
+<!-- Modal to add date to auth -->
+<div class="modal fade" id="validity" role="dialog" aria-labelledby="validityLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><spring:message code="label.validity"/></h4>
+      </div>
+      <div class="modal-body">
+        <div class="input-group date" data-provide="datepicker">
+		    <div class="input-group-addon">
+		        <span class="glyphicon glyphicon-th"></span>
+		    </div>
+		    <input id="dateValidity" type="date" class="form-control">
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
+		<button type="button" class="btn btn-success" id="confirm"><spring:message code="label.confirmation"/></button>
+      </div>
+    </div>
+  </div>
 </div>
 
 

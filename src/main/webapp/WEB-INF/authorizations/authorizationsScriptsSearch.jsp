@@ -542,24 +542,39 @@ a,input,.symbol {
 		}else if($(ui.draggable).hasClass("authorization")){
 			var operation = $(ui.draggable).children('#operationName').html();
 
-			$.ajax({
-	    		  data: {"operation": operation, "user": userId},
-	              url: "${addUrl}",
-	              type: 'POST',
-	              dataType: 'json',
-	              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
-	              success: function(result) {
-	            	  var dropbl = $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td><table class="office-list"></table> </td> <td><table class="program-list"></table></td> </tr>');
-	              		console.log(dropbl.parent().find("#"+result));
-	              		dropbl.parent().find("#"+result).droppable();
-	              		dropbl.parent().find("#"+result).droppable("enable");
-	              		
-	              		$('.auth').droppable({
-							drop: dropFunction
-						})
-	              		
-	              }
-				});
+			$("#validity").modal();
+			
+			$("#confirm").on("click",function(){
+				
+				var validity = $("#dateValidity").val();
+				
+				$.ajax({
+		    		  data: {"operation": operation, "user": userId, "validity": validity},
+		              url: "${addUrl}",
+		              type: 'POST',
+		              dataType: 'json',
+		              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+		              success: function(result) {
+		            	  	  
+		            	  var dropbl = $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td><table class="office-list"></table> </td> <td><table class="program-list"></table></td> </tr>');
+		              		console.log(dropbl.parent().find("#"+result));
+		              		dropbl.parent().find("#"+result).droppable();
+		              		dropbl.parent().find("#"+result).droppable("enable");
+		              		
+		              		$('.auth').droppable({
+								drop: dropFunction
+							})
+						
+							$('#validity').modal('hide');
+		              		
+		              }
+					});
+				
+			});
+			
+			
+						
+			
 		
 		}else{
 			return;

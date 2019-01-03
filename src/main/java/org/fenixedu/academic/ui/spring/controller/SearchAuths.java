@@ -103,10 +103,10 @@ public class SearchAuths {
 
     @RequestMapping(path = "addRule", method = RequestMethod.POST)
     @ResponseBody
-    public String addRule(@RequestParam AcademicOperationType operation, @RequestParam User user) {
+    public String addRule(@RequestParam AcademicOperationType operation, @RequestParam User user, @RequestParam String validity) {
 
         final Set<AcademicAccessTarget> targets = new HashSet<AcademicAccessTarget>();
-        final String id = grantRule(operation, user, targets, new DateTime().plusMinutes(2));
+        final String id = grantRule(operation, user, targets, new DateTime(validity));
 
         return id;
     }
