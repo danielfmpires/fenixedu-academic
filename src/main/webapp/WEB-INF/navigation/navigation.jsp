@@ -6,9 +6,10 @@
 
 <spring:url var="userURL" value="/search-authorizations/search"/>
 <spring:url var="groupURL" value="/navigation/accessGroup"/>
+<spring:url var="add" value="/navigation/addUser"/>
 
 
-<h1>${operation}</h1>
+<h1>${operation.getLocalizedName()}</h1>
 
 users
 <ul>
@@ -18,6 +19,32 @@ users
 
 </c:forEach>
 </ul>
+
+<!-- <div> -->
+<%-- 	<input id="operation" value="${operation}" /> --%>
+<!-- 	<input type="text" id="user"/> -->
+<!-- 	<button id="doit">do it!</button> -->
+<!-- </div> -->
+
+
+<script>
+
+// $("#doit").click(function(){
+
+// 	$.ajax({
+// 		data: {"operation": $("#operation").val(), "user": $("#user").val()},
+//       	url: "${add}",
+//       	type: 'POST',
+//       	headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+//       	success: function(result) {
+//     	  	return;
+// 	    }
+//   	});
+	
+	
+// })
+
+</script> 
 
 
 functionalities

@@ -6,6 +6,7 @@
 
 <spring:url var="userURL" value="/search-authorizations/search"/>
 
+
 <h1>${expression}</h1>
 
 users
@@ -14,5 +15,8 @@ users
 
 	<li><a href="${userURL}?user=${user.value}">${user.key}</a></li>
 
+
 </c:forEach>
+
+
 </ul>

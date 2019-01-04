@@ -3958,7 +3958,7 @@ public class accessControl.rules.AccessRuleSystem;
 public class accessControl.rules.AccessRule {
     protected DateTime created (REQUIRED);
     protected DateTime revoked;
-    protected DateTime validity;
+    DateTime validity (REQUIRED);
     protected AccessOperation operation (REQUIRED);
 }
 

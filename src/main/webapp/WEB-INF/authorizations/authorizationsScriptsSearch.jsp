@@ -450,6 +450,7 @@ a,input,.symbol {
 <spring:url var="addUrl" value="/search-authorizations/addRule"/>
 <spring:url var="modifyOffice" value="/search-authorizations/modifyOffice"/>
 <spring:url var="modifyProgram" value="/search-authorizations/modifyProgram"/>
+<spring:url var="alterValidityURL" value="/search-authorizations/modifyValidity"/>
 
 <script src="${pageContext.request.contextPath}/javaScript/jquery/jquery-ui.js"></script>
 
@@ -556,10 +557,28 @@ a,input,.symbol {
 		              headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
 		              success: function(result) {
 		            	  	  
-		            	  var dropbl = $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td><table class="office-list"></table> </td> <td><table class="program-list"></table></td> </tr>');
+		            	  var dropbl = $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td><table class="office-list"></table> </td> <td><table class="program-list"></table></td><td><input type="date" class="datepicker form-control" value="'+validity+'"/></td> </tr>');
 		              		console.log(dropbl.parent().find("#"+result));
 		              		dropbl.parent().find("#"+result).droppable();
 		              		dropbl.parent().find("#"+result).droppable("enable");
+		              		
+		              		$(".datepicker").change(function(e){
+
+
+		              			var $authId = e.target.parentElement.parentElement.id;
+		              			var $validity = e.target.value;
+		              			
+		              			console.log($authId);
+		              			console.log($validity);
+		              			
+		              			$.ajax({
+		              				data: {"rule": $authId, "validity": $validity},
+		              		        url: "${alterValidityURL}",
+		              		        type: 'POST',
+		              		        headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+		              				});
+		              			
+		              		})
 		              		
 		              		$('.auth').droppable({
 								drop: dropFunction
@@ -591,6 +610,24 @@ a,input,.symbol {
 
 				$("#userInp").on("change", function(){
 					$("#userId").val(users[$("#userInp").val()])
+				})
+				
+				$(".datepicker").change(function(e){
+
+
+					var $authId = e.target.parentElement.parentElement.id;
+					var $validity = e.target.value;
+					
+					console.log($authId);
+					console.log($validity);
+					
+					$.ajax({
+						data: {"rule": $authId, "validity": $validity},
+				        url: "${alterValidityURL}",
+				        type: 'POST',
+				        headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
+						});
+					
 				})
 
 				

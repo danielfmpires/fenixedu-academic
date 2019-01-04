@@ -105,6 +105,10 @@ public class SearchAuths {
     @ResponseBody
     public String addRule(@RequestParam AcademicOperationType operation, @RequestParam User user, @RequestParam String validity) {
 
+        if (validity.length() == 0) {
+            validity = "9999-12-31";
+        }
+
         final Set<AcademicAccessTarget> targets = new HashSet<AcademicAccessTarget>();
         final String id = grantRule(operation, user, targets, new DateTime(validity));
 
@@ -118,11 +122,12 @@ public class SearchAuths {
     }
 
     @RequestMapping(path = "revoke", method = RequestMethod.POST)
+    @ResponseBody
     public String revokeRule(Model model, @RequestParam AcademicAccessRule rule) {
 
         revoke(rule);
 
-        return "authorizations/authorizationsByPerson";
+        return "";
     }
 
     @Atomic(mode = TxMode.WRITE)
@@ -180,6 +185,20 @@ public class SearchAuths {
     @Atomic(mode = TxMode.WRITE)
     private void addProgram(AcademicAccessRule rule, AcademicProgram program, Set<AcademicProgram> programs) {
         programs.add(program);
+    }
+
+    @RequestMapping(path = "modifyValidity", method = RequestMethod.POST)
+    @ResponseBody
+    public String editAuthorizationValidity(@RequestParam AcademicAccessRule rule, @RequestParam String validity) {
+
+        alterValidity(rule, new DateTime(validity));
+
+        return rule.getExternalId();
+    }
+
+    @Atomic(mode = TxMode.WRITE)
+    private void alterValidity(AcademicAccessRule rule, DateTime validity) {
+        rule.setValidity(validity);
     }
 
 }

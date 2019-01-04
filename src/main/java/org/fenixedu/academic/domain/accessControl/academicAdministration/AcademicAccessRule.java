@@ -104,6 +104,11 @@ public class AcademicAccessRule extends AcademicAccessRule_Base implements Compa
     }
 
     @Override
+    public void setValidity(DateTime validity) {
+        super.setValidity(validity);
+    }
+
+    @Override
     public Set<AdministrativeOffice> getOfficeSet() {
         // TODO remove when framework supports read-only slots
         return super.getOfficeSet();

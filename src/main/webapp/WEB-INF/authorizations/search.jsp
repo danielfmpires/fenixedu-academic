@@ -3,22 +3,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <spring:url var="formAction" value="/search-authorizations/search"/>
-
 <spring:url var="navigation" value="/academic-admin-office/academic-administration/navigation"/>
+
 
 <script type="text/javascript">
 var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}",</c:forEach>};
 
 </script>
 
-
-
-<!-- VER COMO MUDAR ISTO -->
-<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
-<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
-<!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
 <jsp:include page="ui-autocomplete.jsp" />
 <jsp:include page="authorizationsScriptsSearch.jsp" />
@@ -46,7 +41,8 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 		  			<tr>
 		  				<th><spring:message code="label.authorizations"/></th>
 			  			<th><spring:message code="label.offices"/></th>
-			  			<th><spring:message code="label.degrees"/></th>	
+			  			<th><spring:message code="label.degrees"/></th>
+			  			<th><spring:message code="label.validity"/></th>	
 		  			</tr>
 		  		</thead>
 		  		<tbody>
@@ -58,7 +54,6 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			  					<button data-user-name="${user.username}" data-auth-id="${auth.externalId}" data-auth-name="${auth.operation.localizedName}"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" title=<spring:message code="label.delete"/>>
 									${auth.operation.localizedName}
 									<span class="glyphicon glyphicon-remove"></span>
-									${auth.getValidity()}
 								</button>
 			  				</td>
 			  				<td>
@@ -85,6 +80,10 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			  						</c:forEach>
 			  					</table>
 							</td>
+							<td>
+								<input value="${fn:split(auth.getValidity(),'T')[0]}" type="date" class="datepicker form-control">	
+								
+							</td>
 			  			</tr>
 			  		</c:forEach>	
 		  		</tbody>
@@ -93,6 +92,8 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 	</div>
 
 </c:if>
+
+
 
 <div class="col-lg-4" style="float:right">
 	<div class="panel-group" id="cursos_acc" data-offset-top="200">
