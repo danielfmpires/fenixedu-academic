@@ -57,8 +57,8 @@ public class SearchAuths {
     public String search(Model model, @RequestParam User user) {
 
         final List<AcademicAccessRule> rules = getAuthorizations(user);
-        final Map<String, String> users = getUsers();
 
+        final Map<String, String> users = getUsers();
         final AcademicOperationType[] operations = AcademicOperationType.class.getEnumConstants();
         final Set<AdministrativeOffice> offices = Bennu.getInstance().getAdministrativeOfficesSet();
         final Set<Degree> degrees = Bennu.getInstance().getDegreesSet();
@@ -73,6 +73,25 @@ public class SearchAuths {
         model.addAttribute("phdPrograms", phdPrograms);
 
         return "authorizations/search";
+    }
+
+    @RequestMapping(path = "search/copy", method = RequestMethod.GET)
+    public String copy(Model model, @RequestParam User user, @RequestParam User copyCat) {
+
+        final List<AcademicAccessRule> rules = getAuthorizations(user);
+        final List<AcademicAccessRule> rulesToCopy = getAuthorizations(copyCat);
+
+        rulesToCopy.forEach(rule -> {
+
+            rules.stream().forEach(ru -> ru.getOperation());
+
+            if (rules.stream().noneMatch(r -> r.getOperation() == rule.getOperation())) {
+                grantRule(rule.getOperation(), user, rule.getWhatCanAffect(), rule.getValidity());
+            }
+
+        });
+
+        return search(model, user);
     }
 
     @Atomic(mode = TxMode.WRITE)

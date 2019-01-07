@@ -5,7 +5,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
-<spring:url var="formAction" value="/search-authorizations/search"/>
+<spring:url var="searchAction" value="/search-authorizations/search"/>
+<spring:url var="copyAction" value="/search-authorizations/search/copy"/>
 <spring:url var="navigation" value="/academic-admin-office/academic-administration/navigation"/>
 
 
@@ -18,14 +19,31 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 <jsp:include page="ui-autocomplete.jsp" />
 <jsp:include page="authorizationsScriptsSearch.jsp" />
 
-<form class="form-horizontal" action="${formAction}" method="GET">
-	<label class="control-label"><spring:message code="label.username" /></label>
-	<input id="userInp" class="autocomplete">
-	<input id="userId" name="user" value="" type="hidden">
-	<button class="btn btn-primary" type="submit"><spring:message code="label.search" /></button>
-</form>
+
+<div class="col-md-4">
+	<form class="form-horizontal" action="${searchAction}" method="GET">
+		<label class="control-label"><spring:message code="label.username" /></label>
+		<input id="userInp" class="autocomplete">
+		<input id="userId" name="user" value="" type="hidden">
+		<button class="btn btn-primary" type="submit"><spring:message code="label.search" /></button>
+	</form>
+</div>
+
+
+
 
 <c:if test="${user!=null}">
+
+	<div >
+		<form class="form-horizontal" action="${copyAction}" method="GET">
+			<label class="control-label"><spring:message code="label.copyFrom" /></label>
+			<input id="userInp2" class="autocomplete">
+			<input id="userId" name="user" value="${user.externalId}" type="hidden">
+			<input id="userCopyId" name="copyCat" value="" type="hidden">
+			<button class="btn btn-primary" type="submit"><spring:message code="label.copy" /></button>
+		</form>
+	</div>
+
 
 	<h1>
 		${user.username}
@@ -92,6 +110,8 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 	</div>
 
 </c:if>
+
+
 
 <div class="col-lg-4" style="float:right">
 	<div class="panel-group" id="cursos_acc" data-offset-top="200">

@@ -631,6 +631,15 @@ a,input,.symbol {
 					$("#userId").val(users[$("#userInp").val()])
 				})
 				
+				
+				$("#userInp2").autocomplete({
+				    source: Object.keys(users)
+				  });
+
+				$("#userInp2").on("change", function(){
+					$("#userCopyId").val(users[$("#userInp2").val()])
+				})
+				
 				$(".datepicker").change(function(e){
 
 
