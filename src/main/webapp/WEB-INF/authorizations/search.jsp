@@ -93,8 +93,6 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 
 </c:if>
 
-
-
 <div class="col-lg-4" style="float:right">
 	<div class="panel-group" id="cursos_acc" data-offset-top="200">
 		<div class="panel panel-default">
@@ -107,13 +105,16 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			</div>
 			<div id="collapseOne" class="panel-collapse collapse">
 				<div class="panel-body">
-					<c:forEach var="operation" items="${operations}" >
-					<a href="${navigation}?operation=${operation}">
-						<div class="draggable_course authorization">
-							<div id="presentationName">${operation.localizedName}</div>
-							<div id="operationName" style="display:none">${operation}</div>
-						</div>
-					</a>
+					<c:forEach var="operation" items="${operations}">
+						<a href="${navigation}?operation=${operation}">
+							<div class="draggable_course authorization">
+								<c:if test="${operation.critical}">
+									<div id="warning">${operation.criticalDescription}</div>
+								</c:if>
+								<div id="presentationName">${operation.localizedName}</div>
+								<div id="operationName" style="display:none">${operation}</div>
+							</div>
+						</a>
 					</c:forEach>
 				</div>
 			</div>

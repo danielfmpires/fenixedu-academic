@@ -42,127 +42,128 @@ import com.google.common.collect.Sets;
 import pt.ist.fenixWebFramework.rendererExtensions.util.IPresentableEnum;
 
 public enum AcademicOperationType implements IPresentableEnum, AccessOperation<AcademicAccessRule, AcademicAccessTarget> {
-    MANAGE_AUTHORIZATIONS(false, false, Scope.ADMINISTRATION),
+    MANAGE_AUTHORIZATIONS(false, false, Scope.ADMINISTRATION, true,
+            "cuidado!! Ao dar esta permissão, esta a permitir que este utilizador faça a gestão de todas as permissões"),
 
-    MANAGE_EQUIVALENCES(true, true, Scope.ADMINISTRATION),  // Migrated from Manager
+    MANAGE_EQUIVALENCES(true, true, Scope.ADMINISTRATION, false, null),  // Migrated from Manager
 
-    MANAGE_ACADEMIC_CALENDARS(false, false, Scope.ADMINISTRATION),  // Migrated from Manager
+    MANAGE_ACADEMIC_CALENDARS(false, false, Scope.ADMINISTRATION, false, null),  // Migrated from Manager
 
     /*
      * Student stuff
      */
 
-    EDIT_STUDENT_PERSONAL_DATA(true, true, Scope.OFFICE),
+    EDIT_STUDENT_PERSONAL_DATA(true, true, Scope.OFFICE, false, null),
 
-    STUDENT_ENROLMENTS(true, true, Scope.OFFICE),
+    STUDENT_ENROLMENTS(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_REGISTRATIONS(true, true, Scope.OFFICE),
+    MANAGE_REGISTRATIONS(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_STATUTES(false, false, Scope.OFFICE),
+    MANAGE_STATUTES(false, false, Scope.OFFICE, false, null),
 
-    MANAGE_CONCLUSION(true, true, Scope.OFFICE),
+    MANAGE_CONCLUSION(true, true, Scope.OFFICE, false, null),
 
-    UPDATE_REGISTRATION_AFTER_CONCLUSION(true, true, Scope.OFFICE),
+    UPDATE_REGISTRATION_AFTER_CONCLUSION(true, true, Scope.OFFICE, false, null),
 
-    REPEAT_CONCLUSION_PROCESS(true, true, Scope.OFFICE),
+    REPEAT_CONCLUSION_PROCESS(true, true, Scope.OFFICE, false, null),
 
-    ENROLMENT_WITHOUT_RULES(true, true, Scope.OFFICE),
+    ENROLMENT_WITHOUT_RULES(true, true, Scope.OFFICE, false, null),
 
-    MOVE_CURRICULUM_LINES_WITHOUT_RULES(true, true, Scope.OFFICE),
+    MOVE_CURRICULUM_LINES_WITHOUT_RULES(true, true, Scope.OFFICE, false, null),
 
-    REPORT_STUDENTS_UTL_CANDIDATES(true, true, Scope.ADMINISTRATION),
+    REPORT_STUDENTS_UTL_CANDIDATES(true, true, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_REGISTERED_DEGREE_CANDIDACIES(true, true, Scope.ADMINISTRATION),
+    MANAGE_REGISTERED_DEGREE_CANDIDACIES(true, true, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_ENROLMENT_PERIODS(true, true, Scope.ADMINISTRATION),     // Migrated from Manager
+    MANAGE_ENROLMENT_PERIODS(true, true, Scope.ADMINISTRATION, false, null),     // Migrated from Manager
 
     /*
      * Mark Sheets
      */
 
-    MANAGE_MARKSHEETS(true, true, Scope.ADMINISTRATION),
+    MANAGE_MARKSHEETS(true, true, Scope.ADMINISTRATION, false, null),
 
-    RECTIFICATION_MARKSHEETS(true, true, Scope.ADMINISTRATION),
+    RECTIFICATION_MARKSHEETS(true, true, Scope.ADMINISTRATION, false, null),
 
-    REMOVE_GRADES(true, true, Scope.ADMINISTRATION),    // Migrated from Manager
+    REMOVE_GRADES(true, true, Scope.ADMINISTRATION, false, null),    // Migrated from Manager
 
-    DISSERTATION_MARKSHEETS(true, true, Scope.ADMINISTRATION),
+    DISSERTATION_MARKSHEETS(true, true, Scope.ADMINISTRATION, false, null),
 
-    REGISTRATION_CONCLUSION_CURRICULUM_VALIDATION(true, true, Scope.OFFICE),
+    REGISTRATION_CONCLUSION_CURRICULUM_VALIDATION(true, true, Scope.OFFICE, false, null),
 
-    CREATE_REGISTRATION(true, true, Scope.OFFICE),
+    CREATE_REGISTRATION(true, true, Scope.OFFICE, false, null),
 
-    STUDENT_LISTINGS(true, true, Scope.ADMINISTRATION),
+    STUDENT_LISTINGS(true, true, Scope.ADMINISTRATION, false, null),
 
-    SERVICE_REQUESTS(true, true, Scope.OFFICE),
+    SERVICE_REQUESTS(true, true, Scope.OFFICE, false, null),
 
-    SERVICE_REQUESTS_RECTORAL_SENDING(true, true, Scope.OFFICE),
+    SERVICE_REQUESTS_RECTORAL_SENDING(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_EXECUTION_COURSES(true, true, Scope.ADMINISTRATION), // Migrated from Manager
+    MANAGE_EXECUTION_COURSES(true, true, Scope.ADMINISTRATION, false, null), // Migrated from Manager
 
-    MANAGE_EXECUTION_COURSES_ADV(true, true, Scope.ADMINISTRATION), // Migrated from Manager
+    MANAGE_EXECUTION_COURSES_ADV(true, true, Scope.ADMINISTRATION, false, null), // Migrated from Manager
 
-    MANAGE_DEGREE_CURRICULAR_PLANS(true, true, Scope.ADMINISTRATION),
+    MANAGE_DEGREE_CURRICULAR_PLANS(true, true, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_EVENT_REPORTS(true, false, Scope.ADMINISTRATION),
+    MANAGE_EVENT_REPORTS(true, false, Scope.ADMINISTRATION, false, null),
 
     // Student Section
 
-    MANAGE_STUDENT_PAYMENTS(true, false, Scope.OFFICE),
+    MANAGE_STUDENT_PAYMENTS(true, false, Scope.OFFICE, false, null),
 
-    MANAGE_STUDENT_PAYMENTS_ADV(true, true, Scope.ADMINISTRATION),  // Migrated from Manager
+    MANAGE_STUDENT_PAYMENTS_ADV(true, true, Scope.ADMINISTRATION, false, null),  // Migrated from Manager
 
-    CREATE_SIBS_PAYMENTS_REPORT(false, false, Scope.ADMINISTRATION),  // Migrated from Manager
+    CREATE_SIBS_PAYMENTS_REPORT(false, false, Scope.ADMINISTRATION, false, null),  // Migrated from Manager
 
-    MANAGE_ACCOUNTING_EVENTS(true, true, Scope.OFFICE),
+    MANAGE_ACCOUNTING_EVENTS(true, true, Scope.OFFICE, false, null),
 
     /* End of Payments */
 
-    MANAGE_PRICES(true, false, Scope.ADMINISTRATION),
+    MANAGE_PRICES(true, false, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_EXTRA_CURRICULAR_ACTIVITIES(false, false, Scope.ADMINISTRATION),
+    MANAGE_EXTRA_CURRICULAR_ACTIVITIES(false, false, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_EXTERNAL_UNITS(false, false, Scope.ADMINISTRATION),
+    MANAGE_EXTERNAL_UNITS(false, false, Scope.ADMINISTRATION, false, null),
 
     /* Candidacies Management */
 
-    MANAGE_INDIVIDUAL_CANDIDACIES(true, true, Scope.ADMINISTRATION),
+    MANAGE_INDIVIDUAL_CANDIDACIES(true, true, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_CANDIDACY_PROCESSES(true, true, Scope.ADMINISTRATION),
+    MANAGE_CANDIDACY_PROCESSES(true, true, Scope.ADMINISTRATION, false, null),
 
     /* End of Candidacies Management */
 
-    VIEW_FULL_STUDENT_CURRICULUM(true, true, Scope.OFFICE),
+    VIEW_FULL_STUDENT_CURRICULUM(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_DOCUMENTS(true, true, Scope.OFFICE),
+    MANAGE_DOCUMENTS(true, true, Scope.OFFICE, false, null),
 
     /* Phd Management */
 
-    VIEW_PHD_CANDIDACY_ALERTS(true, true, Scope.OFFICE),
+    VIEW_PHD_CANDIDACY_ALERTS(true, true, Scope.OFFICE, false, null),
 
-    VIEW_PHD_PUBLIC_PRESENTATION_ALERTS(true, true, Scope.OFFICE),
+    VIEW_PHD_PUBLIC_PRESENTATION_ALERTS(true, true, Scope.OFFICE, false, null),
 
-    VIEW_PHD_THESIS_ALERTS(true, true, Scope.OFFICE),
+    VIEW_PHD_THESIS_ALERTS(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_PHD_ENROLMENT_PERIODS(true, true, Scope.OFFICE),
+    MANAGE_PHD_ENROLMENT_PERIODS(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_PHD_PROCESSES(true, true, Scope.OFFICE),
+    MANAGE_PHD_PROCESSES(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_PHD_PROCESS_STATE(true, true, Scope.OFFICE),
+    MANAGE_PHD_PROCESS_STATE(true, true, Scope.OFFICE, false, null),
 
-    MANAGE_MOBILITY_OUTBOUND(false, false, Scope.ADMINISTRATION),
+    MANAGE_MOBILITY_OUTBOUND(false, false, Scope.ADMINISTRATION, false, null),
 
-    VALIDATE_MOBILITY_OUTBOUND_CANDIDACIES(false, false, Scope.ADMINISTRATION),
+    VALIDATE_MOBILITY_OUTBOUND_CANDIDACIES(false, false, Scope.ADMINISTRATION, false, null),
 
-    VIEW_SCHEDULING_OVERSIGHT(false, false, Scope.ADMINISTRATION),
+    VIEW_SCHEDULING_OVERSIGHT(false, false, Scope.ADMINISTRATION, false, null),
 
     /* MANAGE TEACHER AUTHORIZATIONS */
 
-    MANAGE_TEACHER_AUTHORIZATIONS(false, false, Scope.ADMINISTRATION),
+    MANAGE_TEACHER_AUTHORIZATIONS(false, false, Scope.ADMINISTRATION, false, null),
 
-    MANAGE_TEACHER_PROFESSORSHIPS(false, false, Scope.ADMINISTRATION),
+    MANAGE_TEACHER_PROFESSORSHIPS(false, false, Scope.ADMINISTRATION, false, null),
 
-    SUMMARIES_CONTROL(false, false, Scope.ADMINISTRATION);
+    SUMMARIES_CONTROL(false, false, Scope.ADMINISTRATION, false, null);
 
     public static enum Scope {
         OFFICE, ADMINISTRATION;
@@ -181,6 +182,10 @@ public enum AcademicOperationType implements IPresentableEnum, AccessOperation<A
 
     private Scope scope;
 
+    private boolean critical;
+
+    private String crititicalDescription;
+
     static public Comparator<AcademicOperationType> COMPARATOR_BY_LOCALIZED_NAME = new Comparator<AcademicOperationType>() {
         @Override
         public int compare(final AcademicOperationType p1, final AcademicOperationType p2) {
@@ -191,10 +196,13 @@ public enum AcademicOperationType implements IPresentableEnum, AccessOperation<A
         }
     };
 
-    private AcademicOperationType(boolean allowOffices, boolean allowPrograms, Scope scope) {
+    private AcademicOperationType(boolean allowOffices, boolean allowPrograms, Scope scope, boolean critical,
+            String crititicalDescription) {
         this.allowOffices = allowOffices;
         this.allowPrograms = allowPrograms;
         this.scope = scope;
+        this.critical = critical;
+        this.crititicalDescription = crititicalDescription;
     }
 
     public boolean isOfficeAllowedAsTarget() {
@@ -207,6 +215,14 @@ public enum AcademicOperationType implements IPresentableEnum, AccessOperation<A
 
     public boolean isOfScope(Scope scope) {
         return this.scope.equals(scope);
+    }
+
+    public boolean isCritical() {
+        return this.critical;
+    }
+
+    public String getCriticalDescription() {
+        return this.crititicalDescription;
     }
 
     @Override

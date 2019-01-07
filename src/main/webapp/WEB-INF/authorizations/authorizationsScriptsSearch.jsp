@@ -444,6 +444,17 @@ a,input,.symbol {
 	opacity:0.3;
 }
 
+#warning {
+  display: none;
+}
+
+.alert {
+  padding: 20px;
+  background-color: #d22317f2;
+  color: white;
+  border-radius: 5px;
+}
+
 </style>
 
 <spring:url var="revokeUrl" value="/search-authorizations/revoke"/>
@@ -507,6 +518,7 @@ a,input,.symbol {
 		var userId = $(this).parent().parent().parent().attr('id');
 		var operation = $(this).find('td:nth-child(1) button').attr('data-auth-name');
 		var name = $(ui.draggable).children('#presentationName').html();
+		var description = $(ui.draggable).children('#warning').html();
 		var obj = $(this);
 		
 		
@@ -544,6 +556,13 @@ a,input,.symbol {
 			var operation = $(ui.draggable).children('#operationName').html();
 
 			$("#validity").modal();
+			
+			
+			$("#validity").find(".alert").remove();
+			if(description!=null){
+				
+				$("#validity").find(".modal-body").prepend("<div class=alert>"+description+"</div>");
+			}
 			
 			$("#confirm").on("click",function(){
 				
