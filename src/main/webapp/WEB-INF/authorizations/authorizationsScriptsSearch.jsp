@@ -459,8 +459,7 @@ a,input,.symbol {
 
 <spring:url var="revokeUrl" value="/search-authorizations/revoke"/>
 <spring:url var="addUrl" value="/search-authorizations/addRule"/>
-<spring:url var="modifyOffice" value="/search-authorizations/modifyOffice"/>
-<spring:url var="modifyProgram" value="/search-authorizations/modifyProgram"/>
+
 <spring:url var="alterValidityURL" value="/search-authorizations/modifyValidity"/>
 
 <script src="${pageContext.request.contextPath}/javaScript/jquery/jquery-ui.js"></script>

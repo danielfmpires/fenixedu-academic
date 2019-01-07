@@ -43,7 +43,7 @@ import pt.ist.fenixWebFramework.rendererExtensions.util.IPresentableEnum;
 
 public enum AcademicOperationType implements IPresentableEnum, AccessOperation<AcademicAccessRule, AcademicAccessTarget> {
     MANAGE_AUTHORIZATIONS(false, false, Scope.ADMINISTRATION, true,
-            "cuidado!! Ao dar esta permissão, esta a permitir que este utilizador faça a gestão de todas as permissões"),
+            "Ao dar esta permissão, esta a permitir que este utilizador faça a gestão de todas as permissões"),
 
     MANAGE_EQUIVALENCES(true, true, Scope.ADMINISTRATION, false, null),  // Migrated from Manager
 
@@ -81,7 +81,7 @@ public enum AcademicOperationType implements IPresentableEnum, AccessOperation<A
      * Mark Sheets
      */
 
-    MANAGE_MARKSHEETS(true, true, Scope.ADMINISTRATION, false, null),
+    MANAGE_MARKSHEETS(true, true, Scope.ADMINISTRATION, true, "Cuidado MANU vais mudar as notas dos bacanos"),
 
     RECTIFICATION_MARKSHEETS(true, true, Scope.ADMINISTRATION, false, null),
 

@@ -8,7 +8,8 @@
 <spring:url var="searchAction" value="/search-authorizations/search"/>
 <spring:url var="copyAction" value="/search-authorizations/search/copy"/>
 <spring:url var="navigation" value="/academic-admin-office/academic-administration/navigation"/>
-
+<spring:url var="modifyOffice" value="/search-authorizations/modifyOffice"/>
+<spring:url var="modifyProgram" value="/search-authorizations/modifyProgram"/>
 
 <script type="text/javascript">
 var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}",</c:forEach>};
