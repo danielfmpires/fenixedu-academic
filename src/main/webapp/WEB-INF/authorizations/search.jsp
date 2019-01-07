@@ -40,7 +40,7 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 			<label class="control-label"><spring:message code="label.copyFrom" /></label>
 			<input id="userInp2" class="autocomplete">
 			<input id="userId" name="user" value="${user.externalId}" type="hidden">
-			<input id="userCopyId" name="copyCat" value="" type="hidden">
+			<input id="userCopyId" name="copyFrom" value="" type="hidden">
 			<button class="btn btn-primary" type="submit"><spring:message code="label.copy" /></button>
 		</form>
 	</div>

@@ -76,10 +76,10 @@ public class SearchAuths {
     }
 
     @RequestMapping(path = "search/copy", method = RequestMethod.GET)
-    public String copy(Model model, @RequestParam User user, @RequestParam User copyCat) {
+    public String copy(Model model, @RequestParam User user, @RequestParam User copyFrom) {
 
         final List<AcademicAccessRule> rules = getAuthorizations(user);
-        final List<AcademicAccessRule> rulesToCopy = getAuthorizations(copyCat);
+        final List<AcademicAccessRule> rulesToCopy = getAuthorizations(copyFrom);
 
         rulesToCopy.forEach(rule -> {
 
@@ -91,7 +91,7 @@ public class SearchAuths {
 
         });
 
-        return search(model, user);
+        return "redirect:?user=" + user.getExternalId();
     }
 
     @Atomic(mode = TxMode.WRITE)
