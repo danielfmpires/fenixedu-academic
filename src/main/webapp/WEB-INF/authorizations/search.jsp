@@ -12,7 +12,7 @@
 <spring:url var="modifyProgram" value="/search-authorizations/modifyProgram"/>
 
 <script type="text/javascript">
-var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}",</c:forEach>};
+var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
 
 </script>
 
@@ -24,8 +24,7 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 <div class="col-md-4">
 	<form class="form-horizontal" action="${searchAction}" method="GET">
 		<label class="control-label"><spring:message code="label.username" /></label>
-		<input id="userInp" class="autocomplete">
-		<input id="userId" name="user" value="" type="hidden">
+		<input id="userInp" name="username" class="autocomplete">
 		<button class="btn btn-primary" type="submit"><spring:message code="label.search" /></button>
 	</form>
 </div>
@@ -38,9 +37,8 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 	<div >
 		<form class="form-horizontal" action="${copyAction}" method="GET">
 			<label class="control-label"><spring:message code="label.copyFrom" /></label>
-			<input id="userInp2" class="autocomplete">
-			<input id="userId" name="user" value="${user.externalId}" type="hidden">
-			<input id="userCopyId" name="copyFrom" value="" type="hidden">
+			<input id="userInp2" name="copyFromUsername" class="autocomplete">
+			<input id="userId" name="username" value="${user.username}" type="hidden">
 			<button class="btn btn-primary" type="submit"><spring:message code="label.copy" /></button>
 		</form>
 	</div>
@@ -206,6 +204,15 @@ var users = {<c:forEach var="user" items="${users}">"${user.key}":"${user.value}
 		
 	</div>
 </div>
+
+
+
+<c:forEach var="group" items="${groups}" >
+	${group.expression()}
+
+</c:forEach>
+
+
 
 <!-- Modal to add date to auth -->
 <div class="modal fade" id="validity" role="dialog" aria-labelledby="validityLabel" aria-hidden="true">

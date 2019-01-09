@@ -1,10 +1,8 @@
 package org.fenixedu.academic.ui.spring.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.fenixedu.academic.domain.AcademicProgram;
@@ -16,6 +14,8 @@ import org.fenixedu.academic.domain.administrativeOffice.AdministrativeOffice;
 import org.fenixedu.academic.domain.phd.PhdProgram;
 import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.domain.groups.PersistentDynamicGroup;
+import org.fenixedu.bennu.core.domain.groups.PersistentGroup;
 import org.fenixedu.bennu.spring.portal.SpringFunctionality;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class SearchAuths {
     public String initial(Model model) {
 
         final List<AcademicAccessRule> rules = new ArrayList<AcademicAccessRule>();
-        final Map<String, String> users = getUsers();
+        final Set<String> users = getUsers();
         final AcademicOperationType[] operations = AcademicOperationType.class.getEnumConstants();
         final Set<AdministrativeOffice> offices = Bennu.getInstance().getAdministrativeOfficesSet();
         final Set<Degree> degrees = Bennu.getInstance().getDegreesSet();
@@ -54,11 +54,15 @@ public class SearchAuths {
     }
 
     @RequestMapping(path = "search", method = RequestMethod.GET)
-    public String search(Model model, @RequestParam User user) {
+    public String search(Model model, @RequestParam String username) {
 
-        final List<AcademicAccessRule> rules = getAuthorizations(user);
+        final User user = User.findByUsername(username);
 
-        final Map<String, String> users = getUsers();
+        final Set<AcademicAccessRule> rules = getAuthorizations(user);
+
+        final Set<PersistentGroup> groups = getDynamicGroups(user);
+
+        final Set<String> users = getUsers();
         final AcademicOperationType[] operations = AcademicOperationType.class.getEnumConstants();
         final Set<AdministrativeOffice> offices = Bennu.getInstance().getAdministrativeOfficesSet();
         final Set<Degree> degrees = Bennu.getInstance().getDegreesSet();
@@ -66,6 +70,7 @@ public class SearchAuths {
 
         model.addAttribute("user", user);
         model.addAttribute("rules", rules);
+        model.addAttribute("groups", groups);
         model.addAttribute("users", users);
         model.addAttribute("operations", operations);
         model.addAttribute("offices", offices);
@@ -76,10 +81,13 @@ public class SearchAuths {
     }
 
     @RequestMapping(path = "search/copy", method = RequestMethod.GET)
-    public String copy(Model model, @RequestParam User user, @RequestParam User copyFrom) {
+    public String copy(Model model, @RequestParam String username, @RequestParam String copyFromUsername) {
 
-        final List<AcademicAccessRule> rules = getAuthorizations(user);
-        final List<AcademicAccessRule> rulesToCopy = getAuthorizations(copyFrom);
+        final User user = User.findByUsername(username);
+        final User copyFrom = User.findByUsername(copyFromUsername);
+
+        final Set<AcademicAccessRule> rules = getAuthorizations(user);
+        final Set<AcademicAccessRule> rulesToCopy = getAuthorizations(copyFrom);
 
         rulesToCopy.forEach(rule -> {
 
@@ -91,12 +99,12 @@ public class SearchAuths {
 
         });
 
-        return "redirect:?user=" + user.getExternalId();
+        return "redirect:?username=" + user.getUsername();
     }
 
     @Atomic(mode = TxMode.WRITE)
-    private List<AcademicAccessRule> getAuthorizations(User user) {
-        final List<AcademicAccessRule> userAcademicOperation = new ArrayList<AcademicAccessRule>();
+    private Set<AcademicAccessRule> getAuthorizations(User user) {
+        final Set<AcademicAccessRule> userAcademicOperation = new HashSet<>();
 
         AcademicAccessRule.accessRules().forEach(rule -> {
             rule.getWhoCanAccess().getMembers().forEach(u -> {
@@ -109,12 +117,27 @@ public class SearchAuths {
         return userAcademicOperation;
     }
 
-    private Map<String, String> getUsers() {
+    private Set<PersistentGroup> getDynamicGroups(User user) {
 
-        final Map<String, String> users = new HashMap<String, String>();
+        final Set<PersistentGroup> groups = new HashSet<>();
+
+        Bennu.getInstance().getGroupSet().stream().filter(group -> group.getClass().equals(PersistentDynamicGroup.class))
+                .forEach(group -> {
+                    if (group.isMember(user)) {
+                        groups.add(group);
+                    }
+                });
+
+        return groups;
+
+    }
+
+    private Set<String> getUsers() {
+
+        final Set<String> users = new HashSet<String>();
 
         Bennu.getInstance().getUserSet().forEach(user -> {
-            users.put(user.getUsername(), user.getExternalId());
+            users.add(user.getUsername());
         });
 
         return users;

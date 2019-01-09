@@ -467,6 +467,8 @@ a,input,.symbol {
 <script>
 
 
+
+
 	function modifyScope($scopeId, $authId, $url, $action) {
 		
 		response = false;
@@ -622,23 +624,31 @@ a,input,.symbol {
 	$(document).ready(
 			function() {
 				
+// 				new filter function
+				$.extend( $.ui.autocomplete, {
+					escapeRegex: function( value ) {
+						return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+					},
+					filter: function( array, term ) {
+						var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
+
+						return $.grep( array, function( value ) {
+							return matcher.test( value );
+						} );
+					}
+				} );
+				
 				$("#userInp").autocomplete({
-				    source: Object.keys(users)
+				    source: users,
+				    minLength: 3,
 				  });
 
-				$("#userInp").on("change", function(){
-					$("#userId").val(users[$("#userInp").val()])
-				})
-				
 				
 				$("#userInp2").autocomplete({
-				    source: Object.keys(users)
+				    source: users,
+				    minLength: 3,
 				  });
 
-				$("#userInp2").on("change", function(){
-					$("#userCopyId").val(users[$("#userInp2").val()])
-				})
-				
 				$(".datepicker").change(function(e){
 
 

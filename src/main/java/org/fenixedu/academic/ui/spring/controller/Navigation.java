@@ -33,10 +33,7 @@ public class Navigation {
     @RequestMapping(method = RequestMethod.GET)
     public String initial(Model model, @RequestParam AcademicOperationType operation) {
 
-        final Map<String, String> users = new HashMap<>();
-        AcademicAccessRule.getMembers(operation, null, null).forEach(user -> {
-            users.put(user.getName(), user.getExternalId());
-        });
+        final Map<String, String> users = getMembers(operation);
 
         final Map<String, Map<String, String>> functionalities = new HashMap<>();
 
@@ -58,6 +55,18 @@ public class Navigation {
         model.addAttribute("functionalities", functionalities);
 
         return "navigation/navigation";
+    }
+
+    @Atomic(mode = TxMode.WRITE)
+    private Map<String, String> getMembers(AcademicOperationType operation) {
+
+        final Map<String, String> users = new HashMap<>();
+        AcademicAccessRule.getMembers(operation, null, null).forEach(user -> {
+            users.put(user.getName(), user.getExternalId());
+        });
+
+        return users;
+
     }
 
     @RequestMapping(path = "addUser", method = RequestMethod.POST)
