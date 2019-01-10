@@ -8,8 +8,7 @@
 <spring:url var="searchAction" value="/search-authorizations/search"/>
 <spring:url var="copyAction" value="/search-authorizations/search/copy"/>
 <spring:url var="navigation" value="/academic-admin-office/academic-administration/navigation"/>
-<spring:url var="modifyOffice" value="/search-authorizations/modifyOffice"/>
-<spring:url var="modifyProgram" value="/search-authorizations/modifyProgram"/>
+
 
 <script type="text/javascript">
 var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
@@ -63,7 +62,7 @@ var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
 		  			</tr>
 		  		</thead>
 		  		<tbody>
-		  			<c:if test="${rules.size()==0}"><tr class="auth ui-droppable" style=""><td></td><td></td><td></td></tr></c:if>
+		  			<tr class="auth ui-droppable" style=""><td></td><td></td><td></td></tr>
 		  			
 			  		<c:forEach var="auth" items="${rules}">
 			  			<tr class="auth ui-droppable" id="${auth.externalId}">
@@ -102,7 +101,7 @@ var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
 								
 							</td>
 			  			</tr>
-			  		</c:forEach>	
+			  		</c:forEach>
 		  		</tbody>
 		  	</table>
 		</div>
@@ -227,11 +226,11 @@ var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
 		    <div class="input-group-addon">
 		        <span class="glyphicon glyphicon-th"></span>
 		    </div>
-		    <input id="dateValidity" type="date" class="form-control">
+		    <input id="dateValidity" type="date" class="datepicker form-control">
 		</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
+        <button type="button" class="btn btn-default" id="cancel" data-dismiss="modal"><spring:message code="label.cancel"/></button>
 		<button type="button" class="btn btn-success" id="confirm"><spring:message code="label.confirmation"/></button>
       </div>
     </div>
@@ -251,7 +250,7 @@ var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
         <p><spring:message code="label.spaces.delete.message"/></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
+        <button type="button" class="btn btn-default" id="cancel" data-dismiss="modal"><spring:message code="label.cancel"/></button>
 		<button type="button" class="btn btn-danger" id="confirm"><spring:message code="label.delete"/></button>
       </div>
     </div>
@@ -270,7 +269,7 @@ var users = [<c:forEach var="user" items="${users}">"${user}",</c:forEach>];
         <p><spring:message code="label.spaces.delete.message"/></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="label.cancel"/></button>
+        <button type="button" class="btn btn-default" id="cancel" data-dismiss="modal"><spring:message code="label.cancel"/></button>
         <button type="button" class="btn btn-danger" id="confirm"><spring:message code="label.delete"/></button>
       </div>
     </div>

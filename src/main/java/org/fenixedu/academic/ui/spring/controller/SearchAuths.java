@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.fenixedu.academic.domain.AcademicProgram;
 import org.fenixedu.academic.domain.Degree;
@@ -119,14 +120,9 @@ public class SearchAuths {
 
     private Set<PersistentGroup> getDynamicGroups(User user) {
 
-        final Set<PersistentGroup> groups = new HashSet<>();
-
-        Bennu.getInstance().getGroupSet().stream().filter(group -> group.getClass().equals(PersistentDynamicGroup.class))
-                .forEach(group -> {
-                    if (group.isMember(user)) {
-                        groups.add(group);
-                    }
-                });
+        final Set<PersistentGroup> groups = Bennu.getInstance().getGroupSet().stream()
+                .filter(group -> (group.getClass().equals(PersistentDynamicGroup.class) && group.isMember(user)))
+                .collect(Collectors.toSet());
 
         return groups;
 
@@ -233,9 +229,16 @@ public class SearchAuths {
     @ResponseBody
     public String editAuthorizationValidity(@RequestParam AcademicAccessRule rule, @RequestParam String validity) {
 
-        alterValidity(rule, new DateTime(validity));
+        final DateTime newValidity = new DateTime(validity);
 
-        return rule.getExternalId();
+        if (newValidity.isAfterNow()) {
+            alterValidity(rule, newValidity);
+
+            return rule.getExternalId();
+        }
+
+        return null;
+
     }
 
     @Atomic(mode = TxMode.WRITE)

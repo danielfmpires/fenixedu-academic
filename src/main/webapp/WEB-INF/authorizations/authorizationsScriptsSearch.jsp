@@ -459,7 +459,8 @@ a,input,.symbol {
 
 <spring:url var="revokeUrl" value="/search-authorizations/revoke"/>
 <spring:url var="addUrl" value="/search-authorizations/addRule"/>
-
+<spring:url var="modifyOffice" value="/search-authorizations/modifyOffice"/>
+<spring:url var="modifyProgram" value="/search-authorizations/modifyProgram"/>
 <spring:url var="alterValidityURL" value="/search-authorizations/modifyValidity"/>
 
 <script src="${pageContext.request.contextPath}/javaScript/jquery/jquery-ui.js"></script>
@@ -505,11 +506,19 @@ a,input,.symbol {
                 	  $('#confirmDeleteRule').modal('hide');
 				    }
 				});
-	    	  return;
+	    	  
+	    	  $('#confirmDeleteRule').find('.modal-footer #confirm').off("click");
+	    	  
 		  });
-	      return;
+	      
+	      $('#confirmDeleteRule').find('.modal-footer #cancel').on("click",function(){ 
+	    	  $('#confirmDeleteRule').find('.modal-footer #confirm').off("click");	
+	  	  });
+	      
 	  };
 	  
+	  	
+	
 
 	function dropFunction(event, ui) {
 		if(!$(ui.draggable).hasClass("course-dragging"))
@@ -565,7 +574,7 @@ a,input,.symbol {
 				$("#validity").find(".modal-body").prepend("<div class=alert>"+description+"</div>");
 			}
 			
-			$("#confirm").on("click",function(){
+			$('#validity').find('.modal-footer #confirm').on("click",function(){
 				
 				var validity = $("#dateValidity").val();
 				
@@ -578,7 +587,7 @@ a,input,.symbol {
 		              success: function(result) {
 		            	  	  
 		            	  var dropbl = $(obj).parent().append('<tr class="auth ui-droppable" id="'+result+'"><td><button data-user-name="'+userName+'" data-auth-id="'+result+'" data-auth-name="'+operation+'"  data-toggle="modal" data-target="#confirmDeleteRule" class="btn btn-default" >'+name+' <span class="glyphicon glyphicon-remove"></span></button class="btn btn-default"> </td> <td><table class="office-list"></table> </td> <td><table class="program-list"></table></td><td><input type="date" class="datepicker form-control" value="'+validity+'"/></td> </tr>');
-		              		console.log(dropbl.parent().find("#"+result));
+		              		
 		              		dropbl.parent().find("#"+result).droppable();
 		              		dropbl.parent().find("#"+result).droppable("enable");
 		              		
@@ -588,8 +597,6 @@ a,input,.symbol {
 		              			var $authId = e.target.parentElement.parentElement.id;
 		              			var $validity = e.target.value;
 		              			
-		              			console.log($authId);
-		              			console.log($validity);
 		              			
 		              			$.ajax({
 		              				data: {"rule": $authId, "validity": $validity},
@@ -609,17 +616,23 @@ a,input,.symbol {
 		              }
 					});
 				
+				$('#validity').find('.modal-footer #confirm').off("click");	
+				
 			});
 			
+			$('#validity').find('.modal-footer #cancel').on("click",function(){ 
+				$('#validity').find('.modal-footer #confirm').off("click");	
+			});
 			
-						
-			
-		
 		}else{
 			return;
 		}
 				
 	}
+	
+	
+	
+	
 	
 	$(document).ready(
 			function() {
@@ -649,21 +662,30 @@ a,input,.symbol {
 				    minLength: 3,
 				  });
 
+				$(".datepicker").on("load", function(){
+					
+					var date = new Date();
+					var tomorrow = date.setDate(date.getDate() + 1);
+			        tomorrow = new Date(tomorrow).toJSON().split('T')[0];
+					
+					$(".datepicker").prop('min', tomorrow);
+					
+				}).trigger("load");
+				
+				
 				$(".datepicker").change(function(e){
 
 
 					var $authId = e.target.parentElement.parentElement.id;
 					var $validity = e.target.value;
 					
-					console.log($authId);
-					console.log($validity);
 					
 					$.ajax({
 						data: {"rule": $authId, "validity": $validity},
 				        url: "${alterValidityURL}",
 				        type: 'POST',
 				        headers: { '${csrf.headerName}' :  '${csrf.token}' } ,
-						});
+					});
 					
 				})
 
@@ -718,6 +740,7 @@ a,input,.symbol {
 				    var $authId = $(e.relatedTarget).attr('data-auth-id');
 					
 				    revokeRule($userName, $authName, $authId);
+					    
 					
 				});
 
